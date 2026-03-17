@@ -110,7 +110,8 @@ export const globalCss = {
         borderRadius: '8px',
         p: '4',
         overflow: 'auto',
-        border: '1px solid',
+        borderWidth: '1px',
+        borderStyle: 'solid',
         borderColor: 'border.default',
         '& code': {
           bg: 'transparent',
@@ -122,7 +123,7 @@ export const globalCss = {
       '& hr': {
         border: 'none',
         borderTop: '1px solid',
-        borderColor: 'border.default',
+        borderTopColor: 'border.default',
         my: '2em',
       },
       '& strong': {
@@ -153,12 +154,15 @@ export const globalCss = {
           gap: '0.5em',
           '& > label': {
             flexShrink: 0,
-            marginTop: '0.3em',
+            display: 'flex',
+            alignItems: 'center',
+            height: 'calc(0.9375rem * 1.75)',
             '& input[type="checkbox"]': {
               cursor: 'pointer',
               accentColor: 'var(--colors-indigo-9)',
               width: '16px',
               height: '16px',
+              margin: 0,
             },
           },
           '& > div': {

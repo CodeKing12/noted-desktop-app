@@ -31,7 +31,7 @@ const sidebarStyle = css({
 	position: 'relative',
 	flexShrink: 0,
 	borderRight: '1px solid',
-	borderColor: 'gray.a3',
+	borderRightColor: 'gray.a3',
 })
 
 const noteListStyle = css({
@@ -41,7 +41,7 @@ const noteListStyle = css({
 	position: 'relative',
 	flexShrink: 0,
 	borderRight: '1px solid',
-	borderColor: 'gray.a3',
+	borderRightColor: 'gray.a3',
 })
 
 const resizeHandle = css({

@@ -92,6 +92,7 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 
 	function handleTitleChange(value: string) {
 		setLocalTitle(value)
+		editorStore.setLiveTitle(value || 'Untitled')
 		if (titleTimeout) clearTimeout(titleTimeout)
 		titleTimeout = setTimeout(() => {
 			editorStore.saveNote({ title: value || 'Untitled' })

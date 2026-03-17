@@ -16,7 +16,7 @@ async function fetchNotes(): Promise<Note[]> {
 }
 
 const inputStyle = css({
-	px: '3', py: '2', border: '1px solid',
+	px: '3', py: '2', borderWidth: '1px', borderStyle: 'solid',
 	borderColor: 'gray.6', borderRadius: 'md',
 	outline: 'none', color: 'gray.12',
 	_focus: { borderColor: 'blue.500' },

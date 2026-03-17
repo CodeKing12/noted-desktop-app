@@ -1,6 +1,7 @@
 import { Show } from 'solid-js'
 import { css } from '../../../styled-system/css'
 import { formatDate } from '../../lib/date-utils'
+import { useEditorStore } from '../../stores/editor-store'
 import { PinIcon } from 'lucide-solid'
 
 const cardStyle = css({
@@ -97,7 +98,21 @@ export function NoteCard(props: {
 	onClick: () => void
 	isTrash?: boolean
 }) {
+	const editorStore = useEditorStore()
+
+	const title = () => {
+		if (props.isActive) {
+			const live = editorStore.liveTitle()
+			if (live !== null) return live
+		}
+		return props.note.title || 'Untitled'
+	}
+
 	const preview = () => {
+		if (props.isActive) {
+			const live = editorStore.livePreview()
+			if (live !== null) return live
+		}
 		const plain = props.note.content_plain
 		if (plain) return plain.slice(0, 160)
 		return ''
@@ -112,7 +127,7 @@ export function NoteCard(props: {
 			<div class={`accent-bar ${accentBar}`} />
 			<div class={titleRow}>
 				<span class={titleStyle}>
-					{props.note.title || 'Untitled'}
+					{title()}
 				</span>
 				<Show when={props.note.is_pinned}>
 					<PinIcon class={pinIcon} />

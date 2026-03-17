@@ -12,7 +12,7 @@ const barStyle = css({
 	flexWrap: 'wrap',
 	flexShrink: 0,
 	borderBottom: '1px solid',
-	borderColor: 'gray.a3',
+	borderBottomColor: 'gray.a3',
 })
 
 const tagChip = css({
@@ -26,7 +26,8 @@ const tagChip = css({
 	fontWeight: '500',
 	bg: 'indigo.a2',
 	color: 'indigo.11',
-	border: '1px solid',
+	borderWidth: '1px',
+	borderStyle: 'solid',
 	borderColor: 'indigo.a4',
 	transition: 'all 0.15s',
 	_hover: { bg: 'indigo.a3' },
@@ -51,7 +52,8 @@ const addTagBtn = css({
 	fontWeight: '500',
 	cursor: 'pointer',
 	color: 'fg.subtle',
-	border: '1px dashed',
+	borderWidth: '1px',
+	borderStyle: 'dashed',
 	borderColor: 'gray.a5',
 	transition: 'all 0.15s',
 	_hover: { bg: 'gray.a2', color: 'fg.default', borderColor: 'gray.a6' },
@@ -59,7 +61,8 @@ const addTagBtn = css({
 
 const tagInput = css({
 	fontSize: '11px',
-	border: '1px solid',
+	borderWidth: '1px',
+	borderStyle: 'solid',
 	borderColor: 'indigo.a5',
 	borderRadius: 'md',
 	px: '2',

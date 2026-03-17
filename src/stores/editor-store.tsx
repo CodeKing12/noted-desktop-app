@@ -13,6 +13,10 @@ interface EditorStore {
 	isEditing: () => boolean
 	isSaving: () => boolean
 	setIsSaving: (v: boolean) => void
+	liveTitle: () => string | null
+	setLiveTitle: (title: string) => void
+	livePreview: () => string | null
+	setLivePreview: (preview: string) => void
 	loadNote: (id: string) => Promise<void>
 	saveNote: (data: {
 		title?: string
@@ -27,10 +31,14 @@ export function EditorStoreProvider(props: ParentProps) {
 	const appStore = useAppStore()
 	const [currentNote, setCurrentNote] = createSignal<Note | null>(null)
 	const [isSaving, setIsSaving] = createSignal(false)
+	const [liveTitle, setLiveTitle] = createSignal<string | null>(null)
+	const [livePreview, setLivePreview] = createSignal<string | null>(null)
 
 	const isEditing = () => currentNote() !== null
 
 	async function loadNote(id: string) {
+		setLiveTitle(null)
+		setLivePreview(null)
 		const note = await window.electronAPI.fetchNote(id)
 		if (note) setCurrentNote(note)
 	}
@@ -44,11 +52,8 @@ export function EditorStoreProvider(props: ParentProps) {
 		if (!note) return
 
 		setIsSaving(true)
-		const updated = await window.electronAPI.updateNote(note.id, data)
-		if (updated) {
-			setCurrentNote(updated)
-			appStore.refetchNotes()
-		}
+		await window.electronAPI.updateNote(note.id, data)
+		appStore.refetchNotes()
 		setIsSaving(false)
 	}
 
@@ -68,6 +73,10 @@ export function EditorStoreProvider(props: ParentProps) {
 		isEditing,
 		isSaving,
 		setIsSaving,
+		liveTitle,
+		setLiveTitle,
+		livePreview,
+		setLivePreview,
 		loadNote,
 		saveNote,
 	}

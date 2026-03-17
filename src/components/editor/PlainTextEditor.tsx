@@ -44,6 +44,7 @@ export function PlainTextEditor(props: { note: Note; readonly?: boolean }) {
 	function handleInput(e: InputEvent & { currentTarget: HTMLTextAreaElement }) {
 		const value = e.currentTarget.value
 		setText(value)
+		editorStore.setLivePreview(value.slice(0, 160))
 		debouncedSave(value)
 	}
 

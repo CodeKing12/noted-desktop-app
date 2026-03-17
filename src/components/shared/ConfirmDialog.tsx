@@ -17,7 +17,8 @@ const dialog = css({
 	p: '6',
 	width: '360px',
 	boxShadow: 'lg',
-	border: '1px solid',
+	borderWidth: '1px',
+	borderStyle: 'solid',
 	borderColor: 'border.default',
 })
 

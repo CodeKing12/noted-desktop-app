@@ -64,6 +64,7 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 			editable: !props.readonly,
 			onUpdate: ({ editor: ed }) => {
 				if (isUpdatingContent) return
+				editorStore.setLivePreview(ed.getText().slice(0, 160))
 				const json = JSON.stringify(ed.getJSON())
 				debouncedSave(json)
 			},

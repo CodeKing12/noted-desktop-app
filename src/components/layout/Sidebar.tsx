@@ -147,7 +147,7 @@ const listSection = css({
 
 const bottomSection = css({
 	borderTop: '1px solid',
-	borderColor: 'gray.a3',
+	borderTopColor: 'gray.a3',
 	pt: '2',
 	mt: '2',
 })

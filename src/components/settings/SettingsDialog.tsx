@@ -21,7 +21,8 @@ const dialog = css({
 	maxHeight: '80vh',
 	overflow: 'auto',
 	boxShadow: '0 24px 64px -8px rgba(0, 0, 0, 0.35), 0 0 0 1px {colors.gray.a3}',
-	border: '1px solid',
+	borderWidth: '1px',
+	borderStyle: 'solid',
 	borderColor: 'gray.a4',
 	animation: 'modal-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
 })
@@ -33,7 +34,7 @@ const dialogHeader = css({
 	px: '6',
 	py: '4',
 	borderBottom: '1px solid',
-	borderColor: 'gray.a3',
+	borderBottomColor: 'gray.a3',
 })
 
 const dialogTitle = css({
@@ -67,7 +68,7 @@ const settingRow = css({
 	justifyContent: 'space-between',
 	py: '4',
 	borderBottom: '1px solid',
-	borderColor: 'gray.a3',
+	borderBottomColor: 'gray.a3',
 	_last: { borderBottom: 'none' },
 })
 
@@ -88,7 +89,8 @@ const selectStyle = css({
 	px: '3',
 	py: '1.5',
 	borderRadius: 'lg',
-	border: '1px solid',
+	borderWidth: '1px',
+	borderStyle: 'solid',
 	borderColor: 'gray.a4',
 	bg: 'bg.default',
 	color: 'fg.default',

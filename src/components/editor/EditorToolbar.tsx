@@ -24,7 +24,7 @@ const toolbarStyle = css({
 	px: '4',
 	py: '1.5',
 	borderBottom: '1px solid',
-	borderColor: 'gray.a3',
+	borderBottomColor: 'gray.a3',
 	flexWrap: 'wrap',
 	flexShrink: 0,
 })

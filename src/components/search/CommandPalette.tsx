@@ -22,7 +22,8 @@ const palette = css({
 	maxHeight: '420px',
 	overflow: 'hidden',
 	boxShadow: '0 24px 64px -8px rgba(0, 0, 0, 0.35), 0 0 0 1px {colors.gray.a3}',
-	border: '1px solid',
+	borderWidth: '1px',
+	borderStyle: 'solid',
 	borderColor: 'gray.a4',
 	animation: 'modal-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
 	display: 'flex',
@@ -36,7 +37,7 @@ const searchRow = css({
 	px: '4',
 	py: '3',
 	borderBottom: '1px solid',
-	borderColor: 'gray.a3',
+	borderBottomColor: 'gray.a3',
 })
 
 const searchIconStyle = css({
@@ -161,7 +162,7 @@ const footer = css({
 	px: '4',
 	py: '2',
 	borderTop: '1px solid',
-	borderColor: 'gray.a3',
+	borderTopColor: 'gray.a3',
 	fontSize: '11px',
 	color: 'fg.muted',
 })

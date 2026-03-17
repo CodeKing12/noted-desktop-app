@@ -32,7 +32,8 @@ const headerHint = css({
 const textarea = css({
 	flex: 1,
 	resize: 'none',
-	border: '1px solid',
+	borderWidth: '1px',
+	borderStyle: 'solid',
 	borderColor: 'gray.a4',
 	borderRadius: 'lg',
 	px: '3',
