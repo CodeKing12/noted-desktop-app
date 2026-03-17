@@ -1,7 +1,8 @@
-import { createSignal, createEffect, on, Show } from 'solid-js'
+import { createSignal, createEffect, on, Show, createMemo } from 'solid-js'
 import { css } from '../../../styled-system/css'
 import { useEditorStore } from '../../stores/editor-store'
 import { useAppStore } from '../../stores/app-store'
+import { formatCreatedDate, formatRelativeEdited } from '../../lib/date-utils'
 import {
 	PinIcon,
 	PinOffIcon,
@@ -12,24 +13,52 @@ import {
 
 const headerStyle = css({
 	display: 'flex',
-	alignItems: 'center',
+	flexDirection: 'column',
 	gap: '2',
-	px: '8',
-	py: '3',
 	flexShrink: 0,
+	mb: '2',
 })
 
 const titleInput = css({
-	flex: 1,
-	fontSize: '1.125rem',
-	fontWeight: '600',
+	width: '100%',
+	fontSize: '28px',
+	fontWeight: '700',
 	color: 'fg.default',
 	bg: 'transparent',
 	border: 'none',
 	outline: 'none',
 	padding: 0,
-	letterSpacing: '-0.02em',
-	'&::placeholder': { color: 'fg.muted' },
+	letterSpacing: '-0.03em',
+	lineHeight: '1.2',
+	'&::placeholder': { color: 'gray.a5' },
+})
+
+const metaRow = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '3',
+	flexWrap: 'wrap',
+})
+
+const metaText = css({
+	fontSize: '13px',
+	color: 'fg.subtle',
+	letterSpacing: '-0.01em',
+})
+
+const metaDivider = css({
+	width: '3px',
+	height: '3px',
+	borderRadius: 'full',
+	bg: 'gray.a5',
+	flexShrink: 0,
+})
+
+const actionsRow = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '1',
+	marginLeft: 'auto',
 })
 
 const actionBtn = css({
@@ -45,7 +74,7 @@ const actionBtn = css({
 	_hover: { bg: 'gray.a3', color: 'fg.default' },
 })
 
-const iconSize = css({ width: '4', height: '4' })
+const iconSize = css({ width: '3.5', height: '3.5' })
 
 const saveIndicator = css({
 	display: 'flex',
@@ -64,7 +93,7 @@ const saveDot = css({
 })
 
 const saveText = css({
-	fontSize: '11px',
+	fontSize: '12px',
 	color: 'fg.muted',
 	fontWeight: '500',
 })
@@ -89,6 +118,12 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 			{ defer: true }
 		)
 	)
+
+	const wordCount = createMemo(() => {
+		const plain = props.note.content_plain
+		if (!plain || !plain.trim()) return 0
+		return plain.trim().split(/\s+/).length
+	})
 
 	function handleTitleChange(value: string) {
 		setLocalTitle(value)
@@ -134,45 +169,62 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 				placeholder="Untitled"
 				disabled={props.readonly}
 			/>
-			<Show when={editorStore.isSaving()}>
-				<div class={saveIndicator}>
-					<div class={saveDot} />
-					<span class={saveText}>Saving</span>
-				</div>
-			</Show>
-			<Show
-				when={!props.readonly}
-				fallback={
-					<>
-						<button
-							class={actionBtn}
-							onClick={handleRestore}
-							title="Restore"
-						>
-							<RotateCcwIcon class={iconSize} />
-						</button>
-						<button
-							class={actionBtn}
-							onClick={handleDeletePermanently}
-							title="Delete permanently"
-						>
-							<XIcon class={iconSize} />
-						</button>
-					</>
-				}
-			>
-				<button class={actionBtn} onClick={handlePin} title="Pin/Unpin">
+			<div class={metaRow}>
+				<span class={metaText}>
+					{formatCreatedDate(props.note.created_at)}
+				</span>
+				<div class={metaDivider} />
+				<span class={metaText}>
+					{formatRelativeEdited(props.note.updated_at)}
+				</span>
+				<Show when={wordCount() > 0}>
+					<div class={metaDivider} />
+					<span class={metaText}>
+						{wordCount()} {wordCount() === 1 ? 'word' : 'words'}
+					</span>
+				</Show>
+				<Show when={editorStore.isSaving()}>
+					<div class={saveIndicator}>
+						<div class={saveDot} />
+						<span class={saveText}>Saving</span>
+					</div>
+				</Show>
+				<div class={actionsRow}>
 					<Show
-						when={props.note.is_pinned}
-						fallback={<PinIcon class={iconSize} />}
+						when={!props.readonly}
+						fallback={
+							<>
+								<button
+									class={actionBtn}
+									onClick={handleRestore}
+									title="Restore"
+								>
+									<RotateCcwIcon class={iconSize} />
+								</button>
+								<button
+									class={actionBtn}
+									onClick={handleDeletePermanently}
+									title="Delete permanently"
+								>
+									<XIcon class={iconSize} />
+								</button>
+							</>
+						}
 					>
-						<PinOffIcon class={iconSize} />
+						<button class={actionBtn} onClick={handlePin} title="Pin/Unpin">
+							<Show
+								when={props.note.is_pinned}
+								fallback={<PinIcon class={iconSize} />}
+							>
+								<PinOffIcon class={iconSize} />
+							</Show>
+						</button>
+						<button class={actionBtn} onClick={handleTrash} title="Delete">
+							<Trash2Icon class={iconSize} />
+						</button>
 					</Show>
-				</button>
-				<button class={actionBtn} onClick={handleTrash} title="Delete">
-					<Trash2Icon class={iconSize} />
-				</button>
-			</Show>
+				</div>
+			</div>
 		</div>
 	)
 }

@@ -71,8 +71,11 @@ const editorStyle = css({
 
 export function AppShell() {
 	const store = useAppStore()
+	const SNAP_TARGET = 300
+	const SNAP_THRESHOLD = 8
 	const [noteListWidth, setNoteListWidth] = createSignal(300)
 	const [isDragging, setIsDragging] = createSignal(false)
+	const [showSnapGuide, setShowSnapGuide] = createSignal(false)
 
 	const isTodoView = () => store.currentView() === 'todos'
 	const sidebarWidth = () => (store.sidebarCollapsed() ? 60 : 220)
@@ -109,12 +112,16 @@ export function AppShell() {
 
 		function onMouseMove(e: MouseEvent) {
 			const delta = e.clientX - startX
-			const newWidth = Math.max(220, Math.min(500, startWidth + delta))
+			let newWidth = Math.max(220, Math.min(500, startWidth + delta))
+			const nearSnap = Math.abs(newWidth - SNAP_TARGET) <= SNAP_THRESHOLD
+			setShowSnapGuide(nearSnap)
+			if (nearSnap) newWidth = SNAP_TARGET
 			setNoteListWidth(newWidth)
 		}
 
 		function onMouseUp() {
 			setIsDragging(false)
+			setShowSnapGuide(false)
 			window.removeEventListener('mousemove', onMouseMove)
 			window.removeEventListener('mouseup', onMouseUp)
 		}
@@ -154,6 +161,20 @@ export function AppShell() {
 							data-dragging={isDragging()}
 							onMouseDown={handleResizeStart}
 						/>
+						<Show when={showSnapGuide()}>
+							<div
+								style={{
+									position: 'absolute',
+									top: 0,
+									bottom: 0,
+									right: 0,
+									width: '2px',
+									background: 'var(--colors-indigo-a5)',
+									'z-index': 11,
+									'pointer-events': 'none',
+								}}
+							/>
+						</Show>
 					</div>
 				</Show>
 				<div class={editorStyle}>

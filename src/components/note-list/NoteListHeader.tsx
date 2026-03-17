@@ -7,18 +7,25 @@ const headerStyle = css({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'space-between',
-	px: '4',
-	py: '3',
+	px: '5',
+	py: '4',
 	flexShrink: 0,
 	borderBottom: '1px solid',
 	borderBottomColor: 'gray.a2',
 })
 
 const titleStyle = css({
-	fontSize: '15px',
+	fontSize: '16px',
 	fontWeight: '700',
 	color: 'fg.default',
 	letterSpacing: '-0.02em',
+})
+
+const sortLabel = css({
+	fontSize: '12px',
+	fontWeight: '400',
+	color: 'fg.subtle',
+	marginLeft: '1.5',
 })
 
 const actions = css({
@@ -31,8 +38,8 @@ const actionBtn = css({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
-	width: '7',
-	height: '7',
+	width: '8',
+	height: '8',
 	borderRadius: 'md',
 	cursor: 'pointer',
 	color: 'fg.subtle',
@@ -40,7 +47,7 @@ const actionBtn = css({
 	_hover: { bg: 'gray.a3', color: 'fg.default' },
 })
 
-const iconSize = css({ width: '3.5', height: '3.5' })
+const iconSize = css({ width: '4', height: '4' })
 
 const dropdown = css({
 	position: 'absolute',
@@ -88,6 +95,7 @@ export function NoteListHeader(props: {
 }) {
 	const store = useAppStore()
 	const [showSort, setShowSort] = createSignal(false)
+	let sortContainerRef: HTMLDivElement | undefined
 
 	const sortOptions: { value: NoteSortOrder; label: string }[] = [
 		{ value: 'created_at', label: 'Date created' },
@@ -100,30 +108,37 @@ export function NoteListHeader(props: {
 		setShowSort(false)
 	}
 
-	// Close dropdown when clicking outside
-	function handleClickOutside() {
-		if (showSort()) setShowSort(false)
-	}
-
+	// Close dropdown when clicking outside the sort container
 	onMount(() => {
-		document.addEventListener('click', handleClickOutside)
-		onCleanup(() => document.removeEventListener('click', handleClickOutside))
+		function handleClickOutside(e: MouseEvent) {
+			if (showSort() && sortContainerRef && !sortContainerRef.contains(e.target as Node)) {
+				setShowSort(false)
+			}
+		}
+		document.addEventListener('mousedown', handleClickOutside)
+		onCleanup(() => document.removeEventListener('mousedown', handleClickOutside))
 	})
+
+	const currentSortLabel = () =>
+		sortOptions.find((o) => o.value === store.noteSort())?.label || ''
 
 	return (
 		<div class={headerStyle}>
-			<span class={titleStyle}>{props.title}</span>
+			<span>
+				<span class={titleStyle}>{props.title}</span>
+				<span class={sortLabel}>· {currentSortLabel()}</span>
+			</span>
 			<div class={actions}>
-				<div style={{ position: 'relative' }}>
+				<div ref={sortContainerRef} style={{ position: 'relative' }}>
 					<button
 						class={actionBtn}
-						onClick={(e) => { e.stopPropagation(); setShowSort(!showSort()) }}
+						onClick={() => setShowSort(!showSort())}
 						title="Sort notes"
 					>
 						<ArrowUpDownIcon class={iconSize} />
 					</button>
 					<Show when={showSort()}>
-						<div class={dropdown} onClick={(e) => e.stopPropagation()}>
+						<div class={dropdown}>
 							{sortOptions.map((opt) => (
 								<div
 									class={dropdownItem}

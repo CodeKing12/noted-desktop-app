@@ -42,6 +42,7 @@ interface NoteTag {
 interface Todo {
 	id: string
 	note_id: string | null
+	todo_list_id: string | null
 	text: string
 	is_completed: number
 	due_date: string | null
@@ -49,6 +50,14 @@ interface Todo {
 	sort_order: number
 	created_at: string
 	updated_at: string
+}
+
+interface TodoListItem {
+	id: string
+	name: string
+	color: string
+	sort_order: number
+	created_at: string
 }
 
 interface SearchResult {
@@ -124,10 +133,20 @@ interface ElectronAPI {
 	// Tags
 	fetchAllTags: () => Promise<Tag[]>
 	fetchTagsForNote: (noteId: string) => Promise<Tag[]>
+	fetchTagsForNotes: (noteIds: string[]) => Promise<Record<string, Tag[]>>
 	createTag: (name: string, color?: string) => Promise<Tag>
 	deleteTag: (id: string) => Promise<void>
 	addTagToNote: (noteId: string, tagId: string) => Promise<void>
 	removeTagFromNote: (noteId: string, tagId: string) => Promise<void>
+
+	// Todo Lists
+	fetchAllTodoLists: () => Promise<TodoListItem[]>
+	createTodoList: (name: string, color?: string) => Promise<TodoListItem>
+	updateTodoList: (
+		id: string,
+		data: { name?: string; color?: string }
+	) => Promise<TodoListItem | undefined>
+	deleteTodoList: (id: string) => Promise<void>
 
 	// Todos
 	fetchAllTodos: () => Promise<Todo[]>
@@ -135,6 +154,7 @@ interface ElectronAPI {
 	createTodo: (data: {
 		text: string
 		note_id?: string | null
+		todo_list_id?: string | null
 		due_date?: string | null
 		source_daily_date?: string | null
 	}) => Promise<Todo>
@@ -144,6 +164,7 @@ interface ElectronAPI {
 			text?: string
 			is_completed?: boolean
 			due_date?: string | null
+			todo_list_id?: string | null
 			sort_order?: number
 		}
 	) => Promise<Todo | undefined>

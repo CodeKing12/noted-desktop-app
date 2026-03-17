@@ -187,6 +187,22 @@ function runMigrations() {
 		setSchemaVersion(2)
 	}
 
+	if (currentVersion < 3) {
+		db.exec(`
+			CREATE TABLE IF NOT EXISTS todo_lists (
+				id TEXT PRIMARY KEY,
+				name TEXT NOT NULL,
+				color TEXT DEFAULT 'gray',
+				sort_order INTEGER DEFAULT 0,
+				created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+			);
+
+			ALTER TABLE todos ADD COLUMN todo_list_id TEXT REFERENCES todo_lists(id) ON DELETE SET NULL;
+			CREATE INDEX IF NOT EXISTS idx_todos_list ON todos(todo_list_id);
+		`)
+		setSchemaVersion(3)
+	}
+
 }
 
 runMigrations()

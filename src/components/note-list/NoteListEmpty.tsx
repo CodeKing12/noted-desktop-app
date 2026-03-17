@@ -1,6 +1,7 @@
 import { Show } from 'solid-js'
 import { css } from '../../../styled-system/css'
 import { FileTextIcon, Trash2Icon } from 'lucide-solid'
+import { getGreeting } from '../../lib/date-utils'
 
 const emptyStyle = css({
 	display: 'flex',
@@ -68,8 +69,10 @@ export function NoteListEmpty(props: {
 				}
 			>
 				<FileTextIcon class={iconStyle} />
-				<p class={titleStyle}>No notes yet</p>
-				<p class={descStyle}>Create your first note to get started</p>
+				<p class={titleStyle}>{getGreeting()}</p>
+				<p class={descStyle}>
+					Your notes will show up here. Ready to write something?
+				</p>
 				<button class={createBtn} onClick={props.onCreateNote}>
 					Create Note
 				</button>

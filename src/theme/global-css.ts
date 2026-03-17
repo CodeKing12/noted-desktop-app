@@ -38,12 +38,12 @@ export const globalCss = {
     // TipTap editor styles
     '.tiptap': {
       '& > * + *': {
-        marginTop: '0.6em',
+        marginTop: '0.75em',
       },
       '& h1': {
-        fontSize: '1.875rem',
-        fontWeight: 'bold',
-        lineHeight: '1.25',
+        fontSize: '1.75rem',
+        fontWeight: '700',
+        lineHeight: '1.3',
         letterSpacing: '-0.025em',
         color: 'fg.default',
         mt: '1.5em',
@@ -51,26 +51,28 @@ export const globalCss = {
         '&:first-child': { mt: 0 },
       },
       '& h2': {
-        fontSize: '1.375rem',
-        fontWeight: 'semibold',
-        lineHeight: '1.3',
-        letterSpacing: '-0.015em',
+        fontSize: '1.35rem',
+        fontWeight: '650',
+        lineHeight: '1.35',
+        letterSpacing: '-0.02em',
         color: 'fg.default',
         mt: '1.4em',
         mb: '0.4em',
       },
       '& h3': {
-        fontSize: '1.125rem',
-        fontWeight: 'semibold',
-        lineHeight: '1.4',
+        fontSize: '1.1rem',
+        fontWeight: '600',
+        lineHeight: '1.45',
+        letterSpacing: '-0.01em',
         color: 'fg.default',
         mt: '1.2em',
         mb: '0.3em',
       },
       '& p': {
-        lineHeight: '1.75',
+        lineHeight: '1.8',
         fontSize: '0.9375rem',
         color: 'fg.default',
+        letterSpacing: '-0.005em',
       },
       '& ul, & ol': {
         paddingLeft: '1.5em',
@@ -83,23 +85,23 @@ export const globalCss = {
         listStyleType: 'decimal',
       },
       '& li': {
-        lineHeight: '1.75',
+        lineHeight: '1.8',
         '& > p': {
           margin: 0,
         },
       },
       '& blockquote': {
         borderLeft: '3px solid',
-        borderColor: 'indigo.7',
-        paddingLeft: '1em',
+        borderColor: 'indigo.6',
+        paddingLeft: '1.25em',
         color: 'fg.muted',
         fontStyle: 'italic',
-        my: '1em',
+        my: '1.25em',
       },
       '& code': {
         bg: 'gray.a3',
-        borderRadius: '4px',
-        px: '0.35em',
+        borderRadius: '5px',
+        px: '0.4em',
         py: '0.15em',
         fontSize: '0.85em',
         fontFamily: 'mono',
@@ -107,12 +109,12 @@ export const globalCss = {
       },
       '& pre': {
         bg: '{colors.gray.2}',
-        borderRadius: '8px',
-        p: '4',
+        borderRadius: '10px',
+        p: '5',
         overflow: 'auto',
         borderWidth: '1px',
         borderStyle: 'solid',
-        borderColor: 'border.default',
+        borderColor: 'gray.a3',
         '& code': {
           bg: 'transparent',
           p: 0,
@@ -123,26 +125,29 @@ export const globalCss = {
       '& hr': {
         border: 'none',
         borderTop: '1px solid',
-        borderTopColor: 'border.default',
+        borderTopColor: 'gray.a3',
         my: '2em',
       },
       '& strong': {
-        fontWeight: 'bold',
+        fontWeight: '650',
       },
       '& em': {
         fontStyle: 'italic',
       },
       '& u': {
         textDecoration: 'underline',
-        textUnderlineOffset: '2px',
+        textUnderlineOffset: '3px',
+        textDecorationColor: '{colors.indigo.a5}',
       },
       '& s': {
         textDecoration: 'line-through',
+        textDecorationColor: '{colors.gray.a6}',
       },
       '& mark': {
-        bg: '{colors.indigo.a3}',
-        borderRadius: '2px',
-        px: '2px',
+        bg: '{colors.yellow.a3}',
+        borderRadius: '3px',
+        px: '3px',
+        py: '1px',
       },
       // Task list styles
       '& ul[data-type="taskList"]': {
@@ -151,12 +156,12 @@ export const globalCss = {
         '& li': {
           display: 'flex',
           alignItems: 'flex-start',
-          gap: '0.5em',
+          gap: '0.6em',
           '& > label': {
             flexShrink: 0,
             display: 'flex',
             alignItems: 'center',
-            height: 'calc(0.9375rem * 1.75)',
+            height: 'calc(0.9375rem * 1.8)',
             '& input[type="checkbox"]': {
               cursor: 'pointer',
               accentColor: 'var(--colors-indigo-9)',

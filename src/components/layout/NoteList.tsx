@@ -6,6 +6,7 @@ import { NoteListHeader } from '../note-list/NoteListHeader'
 import { NoteListEmpty } from '../note-list/NoteListEmpty'
 import { SearchResults } from '../search/SearchResults'
 import { DailyNoteView } from '../daily/DailyNoteView'
+import { PinIcon } from 'lucide-solid'
 
 const listContainer = css({
 	display: 'flex',
@@ -19,6 +20,25 @@ const scrollArea = css({
 	overflowY: 'auto',
 	overflowX: 'hidden',
 	py: '1',
+})
+
+const pinnedLabel = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '1.5',
+	px: '5',
+	pt: '3',
+	pb: '1.5',
+	fontSize: '12px',
+	fontWeight: '600',
+	color: 'fg.subtle',
+	textTransform: 'uppercase',
+	letterSpacing: '0.04em',
+})
+
+const pinnedIcon = css({
+	width: '3.5',
+	height: '3.5',
 })
 
 export function NoteList() {
@@ -56,6 +76,24 @@ export function NoteList() {
 		return store.notes() || []
 	})
 
+	const pinnedNotes = createMemo(() =>
+		displayNotes().filter((n) => n.is_pinned)
+	)
+
+	const unpinnedNotes = createMemo(() =>
+		displayNotes().filter((n) => !n.is_pinned)
+	)
+
+	// Batch-load tags whenever displayed notes change
+	createEffect(
+		on(displayNotes, (notes) => {
+			const ids = notes.map((n) => n.id)
+			if (ids.length > 0) {
+				store.loadTagsForNotes(ids)
+			}
+		})
+	)
+
 	const viewTitle = createMemo(() => {
 		const view = currentView()
 		if (view === 'all') return 'All Notes'
@@ -68,6 +106,18 @@ export function NoteList() {
 		}
 		return 'Notes'
 	})
+
+	async function handleRefresh() {
+		store.refetchNotes()
+		const view = currentView()
+		if (typeof view === 'object' && view.type === 'list') {
+			const notes = await window.electronAPI.fetchNotesByList(view.listId, store.noteSort())
+			setListNotes(notes)
+		} else if (view === 'trash') {
+			const notes = await window.electronAPI.fetchTrashedNotes()
+			setListNotes(notes)
+		}
+	}
 
 	async function handleCreateNote() {
 		const view = currentView()
@@ -109,11 +159,37 @@ export function NoteList() {
 							/>
 						}
 					>
-						<Index each={displayNotes()}>
+						<Show when={pinnedNotes().length > 0}>
+							<div class={pinnedLabel}>
+								<PinIcon class={pinnedIcon} />
+								Pinned
+							</div>
+							<Index each={pinnedNotes()}>
+								{(note, i) => (
+									<div
+										style={{
+											'animation-delay': `${i * 30}ms`,
+											'animation-fill-mode': 'both',
+										}}
+									>
+										<NoteCard
+											note={note()}
+											isActive={store.selectedNoteId() === note().id}
+											onClick={() =>
+												store.setSelectedNoteId(note().id)
+											}
+											isTrash={isTrash()}
+											tags={store.noteTagsMap()[note().id]}
+										/>
+									</div>
+								)}
+							</Index>
+						</Show>
+						<Index each={unpinnedNotes()}>
 							{(note, i) => (
 								<div
 									style={{
-										'animation-delay': `${i * 30}ms`,
+										'animation-delay': `${(i + pinnedNotes().length) * 30}ms`,
 										'animation-fill-mode': 'both',
 									}}
 								>
@@ -123,7 +199,9 @@ export function NoteList() {
 										onClick={() =>
 											store.setSelectedNoteId(note().id)
 										}
+										onRefresh={handleRefresh}
 										isTrash={isTrash()}
+										tags={store.noteTagsMap()[note().id]}
 									/>
 								</div>
 							)}

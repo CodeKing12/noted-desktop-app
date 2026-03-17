@@ -14,13 +14,14 @@ import { tiptapToPlaintext } from '../../lib/tiptap-to-plaintext'
 const editorWrap = css({
 	minHeight: '200px',
 	flex: 1,
+	mt: '2',
 	'& .tiptap': {
 		outline: 'none',
 		minHeight: '200px',
 	},
 	'& .tiptap p.is-editor-empty:first-child::before': {
 		content: 'attr(data-placeholder)',
-		color: 'fg.muted',
+		color: 'gray.a5',
 		float: 'left',
 		pointerEvents: 'none',
 		height: 0,

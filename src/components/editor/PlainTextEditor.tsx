@@ -12,10 +12,12 @@ const textareaStyle = css({
 	outline: 'none',
 	bg: 'transparent',
 	color: 'fg.default',
-	fontSize: 'sm',
-	lineHeight: '1.7',
+	fontSize: '15px',
+	lineHeight: '1.8',
 	fontFamily: 'sans-serif',
-	'&::placeholder': { color: 'fg.muted' },
+	letterSpacing: '-0.01em',
+	mt: '2',
+	'&::placeholder': { color: 'gray.a5' },
 })
 
 export function PlainTextEditor(props: { note: Note; readonly?: boolean }) {

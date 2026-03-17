@@ -36,11 +36,15 @@ interface AppStore {
 	lists: () => NoteList[] | undefined
 	tags: () => Tag[] | undefined
 	todos: () => Todo[] | undefined
+	todoLists: () => TodoListItem[] | undefined
 	searchResults: () => SearchResult[] | undefined
+	noteTagsMap: () => Record<string, Tag[]>
+	loadTagsForNotes: (ids: string[]) => void
 	refetchNotes: () => void
 	refetchLists: () => void
 	refetchTags: () => void
 	refetchTodos: () => void
+	refetchTodoLists: () => void
 	refetchSearch: () => void
 	notesLoading: () => boolean
 }
@@ -59,6 +63,10 @@ async function loadTodos(): Promise<Todo[]> {
 	return window.electronAPI.fetchAllTodos()
 }
 
+async function loadTodoLists(): Promise<TodoListItem[]> {
+	return window.electronAPI.fetchAllTodoLists()
+}
+
 export function AppStoreProvider(props: ParentProps) {
 	const [currentView, setCurrentView] = createSignal<SidebarView>('all')
 	const [selectedNoteId, setSelectedNoteId] = createSignal<string | null>(null)
@@ -66,7 +74,14 @@ export function AppStoreProvider(props: ParentProps) {
 	const [sidebarCollapsed, setSidebarCollapsed] = createSignal(false)
 	const [focusMode, setFocusMode] = createSignal(false)
 	const [commandPaletteOpen, setCommandPaletteOpen] = createSignal(false)
-	const [noteSort, setNoteSort] = createSignal<NoteSortOrder>('created_at')
+	const [noteSort, setNoteSort] = createSignal<NoteSortOrder>('updated_at')
+	const [noteTagsMap, setNoteTagsMap] = createSignal<Record<string, Tag[]>>({})
+
+	async function loadTagsForNotes(ids: string[]) {
+		if (ids.length === 0) return
+		const map = await window.electronAPI.fetchTagsForNotes(ids)
+		setNoteTagsMap((prev) => ({ ...prev, ...map }))
+	}
 
 	const [notes, { refetch: refetchNotes }] = createResource(
 		noteSort,
@@ -77,6 +92,7 @@ export function AppStoreProvider(props: ParentProps) {
 	const [lists, { refetch: refetchLists }] = createResource(loadLists)
 	const [tags, { refetch: refetchTags }] = createResource(loadTags)
 	const [todos, { refetch: refetchTodos }] = createResource(loadTodos)
+	const [todoLists, { refetch: refetchTodoLists }] = createResource(loadTodoLists)
 
 	const [searchResults, { refetch: refetchSearch }] = createResource(
 		searchQuery,
@@ -106,11 +122,15 @@ export function AppStoreProvider(props: ParentProps) {
 		lists: () => lists(),
 		tags: () => tags(),
 		todos: () => todos(),
+		todoLists: () => todoLists(),
 		searchResults: () => searchResults(),
+		noteTagsMap,
+		loadTagsForNotes,
 		refetchNotes: () => refetchNotes(),
 		refetchLists: () => refetchLists(),
 		refetchTags: () => refetchTags(),
 		refetchTodos: () => refetchTodos(),
+		refetchTodoLists: () => refetchTodoLists(),
 		refetchSearch: () => refetchSearch(),
 		notesLoading: () => notes.loading,
 	}

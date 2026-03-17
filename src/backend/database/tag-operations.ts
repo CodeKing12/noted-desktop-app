@@ -54,3 +54,33 @@ export function removeTagFromNote(noteId: string, tagId: string): void {
 		tagId
 	)
 }
+
+export function fetchTagsForNotes(
+	noteIds: string[]
+): Record<string, Tag[]> {
+	if (noteIds.length === 0) return {}
+	const placeholders = noteIds.map(() => '?').join(', ')
+	const rows = db
+		.prepare(
+			`SELECT nt.note_id, t.id, t.name, t.color, t.created_at
+			 FROM note_tags nt
+			 INNER JOIN tags t ON t.id = nt.tag_id
+			 WHERE nt.note_id IN (${placeholders})
+			 ORDER BY t.name ASC`
+		)
+		.all(...noteIds) as (Tag & { note_id: string })[]
+
+	const result: Record<string, Tag[]> = {}
+	for (const id of noteIds) {
+		result[id] = []
+	}
+	for (const row of rows) {
+		result[row.note_id].push({
+			id: row.id,
+			name: row.name,
+			color: row.color,
+			created_at: row.created_at,
+		})
+	}
+	return result
+}

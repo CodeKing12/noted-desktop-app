@@ -17,28 +17,19 @@ import {
 	MinusIcon,
 } from 'lucide-solid'
 
-const toolbarStyle = css({
-	display: 'flex',
-	alignItems: 'center',
-	gap: '0.5',
-	px: '4',
-	py: '1.5',
-	borderBottom: '1px solid',
-	borderBottomColor: 'gray.a3',
-	flexWrap: 'wrap',
-	flexShrink: 0,
-})
+export type ToolbarPosition = 'top' | 'right' | 'bottom' | 'left'
 
 const toolBtn = css({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
-	width: '7',
-	height: '7',
-	borderRadius: 'md',
+	width: '8',
+	height: '8',
+	borderRadius: 'lg',
 	cursor: 'pointer',
 	color: 'fg.subtle',
-	transition: 'all 0.12s',
+	transition: 'all 0.15s',
+	flexShrink: 0,
 	_hover: { bg: 'gray.a3', color: 'fg.default' },
 	'&[data-active="true"]': {
 		bg: 'indigo.a3',
@@ -46,16 +37,12 @@ const toolBtn = css({
 	},
 })
 
-const divider = css({
-	width: '1px',
-	height: '5',
-	bg: 'gray.a3',
-	mx: '1',
-})
+const iconSize = css({ width: '4', height: '4' })
 
-const iconSize = css({ width: '3.5', height: '3.5' })
-
-export function EditorToolbar() {
+export function EditorToolbar(props: {
+	scrolled?: boolean
+	position?: ToolbarPosition
+}) {
 	function cmd(action: () => void) {
 		return (e: MouseEvent) => {
 			e.preventDefault()
@@ -65,8 +52,68 @@ export function EditorToolbar() {
 
 	const e = () => getEditorInstance()
 
+	const isVertical = () =>
+		props.position === 'left' || props.position === 'right'
+
+	const dividerStyle = () => {
+		if (isVertical()) {
+			return {
+				width: '20px',
+				height: '1px',
+				background: 'var(--colors-gray-a3)',
+				margin: '4px 0',
+				'flex-shrink': '0',
+			}
+		}
+		return {
+			width: '1px',
+			height: '20px',
+			background: 'var(--colors-gray-a3)',
+			margin: '0 6px',
+			'flex-shrink': '0',
+		}
+	}
+
+	const toolbarContainerStyle = () => {
+		const pos = props.position || 'top'
+		const base: Record<string, string> = {
+			display: 'flex',
+			'align-items': 'center',
+			gap: '2px',
+			'flex-shrink': '0',
+			'z-index': '2',
+			background: 'var(--colors-bg-default)',
+			transition: 'box-shadow 0.2s ease',
+		}
+
+		if (pos === 'top' || pos === 'bottom') {
+			base['flex-direction'] = 'row'
+			base['flex-wrap'] = 'wrap'
+			base.padding = '8px 24px'
+			if (pos === 'top') {
+				base['border-bottom'] = '1px solid var(--colors-gray-a2)'
+				base['box-shadow'] = props.scrolled
+					? '0 2px 12px -3px rgba(0, 0, 0, 0.1)'
+					: 'none'
+			} else {
+				base['border-top'] = '1px solid var(--colors-gray-a2)'
+			}
+		} else {
+			base['flex-direction'] = 'column'
+			base['overflow-y'] = 'auto'
+			base.padding = '12px 8px'
+			if (pos === 'left') {
+				base['border-right'] = '1px solid var(--colors-gray-a2)'
+			} else {
+				base['border-left'] = '1px solid var(--colors-gray-a2)'
+			}
+		}
+
+		return base
+	}
+
 	return (
-		<div class={toolbarStyle}>
+		<div style={toolbarContainerStyle()}>
 			<button
 				class={toolBtn}
 				onMouseDown={cmd(() => e()?.chain().focus().toggleBold().run())}
@@ -91,7 +138,7 @@ export function EditorToolbar() {
 			<button
 				class={toolBtn}
 				onMouseDown={cmd(() => e()?.chain().focus().toggleStrike().run())}
-				title="Strikethrough"
+				title="Strikethrough (Ctrl+Shift+S)"
 			>
 				<StrikethroughIcon class={iconSize} />
 			</button>
@@ -103,7 +150,7 @@ export function EditorToolbar() {
 				<HighlighterIcon class={iconSize} />
 			</button>
 
-			<div class={divider} />
+			<div style={dividerStyle()} />
 
 			<button
 				class={toolBtn}
@@ -133,7 +180,7 @@ export function EditorToolbar() {
 				<Heading3Icon class={iconSize} />
 			</button>
 
-			<div class={divider} />
+			<div style={dividerStyle()} />
 
 			<button
 				class={toolBtn}
@@ -163,14 +210,14 @@ export function EditorToolbar() {
 				<ListChecksIcon class={iconSize} />
 			</button>
 
-			<div class={divider} />
+			<div style={dividerStyle()} />
 
 			<button
 				class={toolBtn}
 				onMouseDown={cmd(() =>
 					e()?.chain().focus().toggleCodeBlock().run()
 				)}
-				title="Code Block"
+				title="Code Block (Ctrl+Alt+C)"
 			>
 				<CodeIcon class={iconSize} />
 			</button>
@@ -179,7 +226,7 @@ export function EditorToolbar() {
 				onMouseDown={cmd(() =>
 					e()?.chain().focus().toggleBlockquote().run()
 				)}
-				title="Blockquote"
+				title="Blockquote (Ctrl+Shift+B)"
 			>
 				<QuoteIcon class={iconSize} />
 			</button>

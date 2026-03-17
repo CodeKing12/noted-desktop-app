@@ -2,6 +2,7 @@ import { ipcMain } from 'electron'
 import {
 	fetchAllTags,
 	fetchTagsForNote,
+	fetchTagsForNotes,
 	createTag,
 	deleteTag,
 	addTagToNote,
@@ -12,6 +13,9 @@ export function registerTagsHandlers() {
 	ipcMain.handle('tags:fetch-all', () => fetchAllTags())
 	ipcMain.handle('tags:fetch-for-note', (_, noteId: string) =>
 		fetchTagsForNote(noteId)
+	)
+	ipcMain.handle('tags:fetch-for-notes', (_, noteIds: string[]) =>
+		fetchTagsForNotes(noteIds)
 	)
 	ipcMain.handle('tags:create', (_, name: string, color?: string) =>
 		createTag(name, color)

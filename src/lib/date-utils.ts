@@ -47,3 +47,18 @@ export function isOverdue(dateStr: string): boolean {
 export function isToday(dateStr: string): boolean {
 	return dateStr === getTodayDate()
 }
+
+export function formatCreatedDate(dateStr: string): string {
+	return formatDate(dateStr)
+}
+
+export function formatRelativeEdited(dateStr: string): string {
+	return `edited ${formatDate(dateStr).toLowerCase()}`
+}
+
+export function getGreeting(): string {
+	const hour = new Date().getHours()
+	if (hour < 12) return 'Good morning!'
+	if (hour < 18) return 'Good afternoon!'
+	return 'Good evening!'
+}

@@ -3,6 +3,7 @@ import db, { generateId } from './db.js'
 export interface Todo {
 	id: string
 	note_id: string | null
+	todo_list_id: string | null
 	text: string
 	is_completed: number
 	due_date: string | null
@@ -35,6 +36,7 @@ export function fetchTodoById(id: string): Todo | undefined {
 export function createTodo(data: {
 	text: string
 	note_id?: string | null
+	todo_list_id?: string | null
 	due_date?: string | null
 	source_daily_date?: string | null
 }): Todo {
@@ -45,12 +47,13 @@ export function createTodo(data: {
 	const sortOrder = (maxOrder?.max ?? -1) + 1
 
 	db.prepare(
-		`INSERT INTO todos (id, text, note_id, due_date, source_daily_date, sort_order)
-		 VALUES (?, ?, ?, ?, ?, ?)`
+		`INSERT INTO todos (id, text, note_id, todo_list_id, due_date, source_daily_date, sort_order)
+		 VALUES (?, ?, ?, ?, ?, ?, ?)`
 	).run(
 		id,
 		data.text,
 		data.note_id ?? null,
+		data.todo_list_id ?? null,
 		data.due_date ?? null,
 		data.source_daily_date ?? null,
 		sortOrder
@@ -64,6 +67,7 @@ export function updateTodo(
 		text?: string
 		is_completed?: boolean
 		due_date?: string | null
+		todo_list_id?: string | null
 		sort_order?: number
 	}
 ): Todo | undefined {
@@ -79,12 +83,14 @@ export function updateTodo(
 			: existing.is_completed
 	const dueDate =
 		data.due_date !== undefined ? data.due_date : existing.due_date
+	const todoListId =
+		data.todo_list_id !== undefined ? data.todo_list_id : existing.todo_list_id
 	const sortOrder = data.sort_order ?? existing.sort_order
 
 	db.prepare(
-		`UPDATE todos SET text = ?, is_completed = ?, due_date = ?, sort_order = ?,
+		`UPDATE todos SET text = ?, is_completed = ?, due_date = ?, todo_list_id = ?, sort_order = ?,
 		 updated_at = CURRENT_TIMESTAMP WHERE id = ?`
-	).run(text, isCompleted, dueDate, sortOrder, id)
+	).run(text, isCompleted, dueDate, todoListId, sortOrder, id)
 
 	return fetchTodoById(id)
 }

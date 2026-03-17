@@ -18,7 +18,10 @@ export interface Note {
 export type NoteSortOrder = 'updated_at' | 'created_at' | 'title'
 
 export function fetchAllNotes(sort: NoteSortOrder = 'created_at'): Note[] {
-	const orderCol = sort === 'title' ? 'title ASC' : `${sort} DESC`
+	let orderCol: string
+	if (sort === 'title') orderCol = 'title ASC'
+	else if (sort === 'created_at') orderCol = 'created_at ASC'
+	else orderCol = `${sort} DESC`
 	return db
 		.prepare(
 			`SELECT * FROM notes WHERE is_trashed = 0 ORDER BY is_pinned DESC, ${orderCol}`
@@ -33,7 +36,10 @@ export function fetchNoteById(id: string): Note | undefined {
 }
 
 export function fetchNotesByList(listId: string, sort: NoteSortOrder = 'created_at'): Note[] {
-	const orderCol = sort === 'title' ? 'title ASC' : `${sort} DESC`
+	let orderCol: string
+	if (sort === 'title') orderCol = 'title ASC'
+	else if (sort === 'created_at') orderCol = 'created_at ASC'
+	else orderCol = `${sort} DESC`
 	return db
 		.prepare(
 			`SELECT * FROM notes WHERE list_id = ? AND is_trashed = 0 ORDER BY is_pinned DESC, ${orderCol}`

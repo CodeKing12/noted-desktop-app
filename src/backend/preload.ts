@@ -40,6 +40,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	fetchAllTags: () => ipcRenderer.invoke('tags:fetch-all'),
 	fetchTagsForNote: (noteId: string) =>
 		ipcRenderer.invoke('tags:fetch-for-note', noteId),
+	fetchTagsForNotes: (noteIds: string[]) =>
+		ipcRenderer.invoke('tags:fetch-for-notes', noteIds),
 	createTag: (name: string, color?: string) =>
 		ipcRenderer.invoke('tags:create', name, color),
 	deleteTag: (id: string) => ipcRenderer.invoke('tags:delete', id),
@@ -59,6 +61,14 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	deleteTodo: (id: string) => ipcRenderer.invoke('todos:delete', id),
 	rolloverTodos: (fromDate: string, toDate: string) =>
 		ipcRenderer.invoke('todos:rollover', fromDate, toDate),
+
+	// Todo Lists
+	fetchAllTodoLists: () => ipcRenderer.invoke('todo-lists:fetch-all'),
+	createTodoList: (name: string, color?: string) =>
+		ipcRenderer.invoke('todo-lists:create', name, color),
+	updateTodoList: (id: string, data: Record<string, unknown>) =>
+		ipcRenderer.invoke('todo-lists:update', id, data),
+	deleteTodoList: (id: string) => ipcRenderer.invoke('todo-lists:delete', id),
 
 	// Search
 	searchNotes: (query: string) => ipcRenderer.invoke('search:notes', query),

@@ -43,6 +43,7 @@ const spawnAppWindow = async () => {
 		height: 800,
 		minWidth: 800,
 		minHeight: 500,
+		center: true,
 		icon: getAssetPath('icon.png'),
 		title: electronIsDev ? 'Notes - Development' : 'Notes',
 		show: false,
@@ -58,8 +59,10 @@ const spawnAppWindow = async () => {
 			? 'http://localhost:7241'
 			: `file://${path.join(__dirname, '../../dist/index.html')}`
 	)
-	appWindow.maximize()
-	appWindow.show()
+
+	appWindow.once('ready-to-show', () => {
+		appWindow?.show()
+	})
 
 	if (electronIsDev) appWindow.webContents.openDevTools({ mode: 'right' })
 
