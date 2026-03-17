@@ -1,5 +1,11 @@
 import path from 'node:path'
-import { app, BrowserWindow, ipcMain, nativeTheme } from 'electron'
+import {
+	app,
+	BrowserWindow,
+	ipcMain,
+	nativeTheme,
+	globalShortcut,
+} from 'electron'
 import log from 'electron-log'
 import electronUpdater from 'electron-updater'
 import electronIsDev from 'electron-is-dev'
@@ -7,17 +13,14 @@ import ElectronStore from 'electron-store'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import { RESOURCES_PATH } from './constants.js'
-import {
-	fetchAllNotes,
-	createNote,
-	updateNote,
-	deleteNote,
-} from './database/note-operations.js'
+import { registerAllHandlers } from './ipc/register-all.js'
+import { createNote } from './database/note-operations.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const { autoUpdater } = electronUpdater
 let appWindow: BrowserWindow | null = null
+let quickCaptureWindow: BrowserWindow | null = null
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const store = new ElectronStore()
 
@@ -36,13 +39,14 @@ const getAssetPath = (...paths: string[]): string => {
 
 const spawnAppWindow = async () => {
 	appWindow = new BrowserWindow({
-		width: 900,
-		height: 670,
+		width: 1200,
+		height: 800,
+		minWidth: 800,
+		minHeight: 500,
 		icon: getAssetPath('icon.png'),
-		title: electronIsDev
-			? 'Astro Electron App - Development'
-			: 'Astro Electron App',
+		title: electronIsDev ? 'Notes - Development' : 'Notes',
 		show: false,
+		frame: true,
 		webPreferences: {
 			preload: PRELOAD_PATH,
 			webSecurity: !electronIsDev,
@@ -64,9 +68,65 @@ const spawnAppWindow = async () => {
 	})
 }
 
+function spawnQuickCaptureWindow() {
+	if (quickCaptureWindow && !quickCaptureWindow.isDestroyed()) {
+		quickCaptureWindow.show()
+		quickCaptureWindow.focus()
+		return
+	}
+
+	quickCaptureWindow = new BrowserWindow({
+		width: 500,
+		height: 220,
+		frame: false,
+		transparent: false,
+		alwaysOnTop: true,
+		resizable: false,
+		skipTaskbar: true,
+		show: false,
+		icon: getAssetPath('icon.png'),
+		webPreferences: {
+			preload: PRELOAD_PATH,
+			webSecurity: !electronIsDev,
+		},
+	})
+
+	quickCaptureWindow.loadURL(
+		electronIsDev
+			? 'http://localhost:7241/quick-capture'
+			: `file://${path.join(__dirname, '../../dist/quick-capture/index.html')}`
+	)
+
+	quickCaptureWindow.once('ready-to-show', () => {
+		quickCaptureWindow?.show()
+		quickCaptureWindow?.focus()
+	})
+
+	quickCaptureWindow.on('blur', () => {
+		quickCaptureWindow?.hide()
+	})
+
+	quickCaptureWindow.on('closed', () => {
+		quickCaptureWindow = null
+	})
+}
+
+function registerGlobalShortcuts() {
+	globalShortcut.register('CommandOrControl+Shift+N', () => {
+		spawnQuickCaptureWindow()
+	})
+}
+
 app.on('ready', () => {
 	new AppUpdater()
+	registerAllHandlers()
+	registerAppHandlers()
+	registerGlobalShortcuts()
 	spawnAppWindow()
+})
+
+app.on('will-quit', () => {
+	globalShortcut.unregisterAll()
 })
 
 app.on('window-all-closed', () => {
@@ -81,31 +141,40 @@ app.on('window-all-closed', () => {
  * ======================================================================================
  */
 
-// Sample ping handler
-ipcMain.handle('sample:ping', () => {
-	return 'pong'
-})
+function registerAppHandlers() {
+	// Dark mode handlers
+	ipcMain.handle('dark-mode:toggle', () => {
+		if (nativeTheme.shouldUseDarkColors) {
+			nativeTheme.themeSource = 'light'
+		} else {
+			nativeTheme.themeSource = 'dark'
+		}
+		return nativeTheme.shouldUseDarkColors
+	})
 
-// Dark mode handlers
-ipcMain.handle('dark-mode:toggle', () => {
-	if (nativeTheme.shouldUseDarkColors) {
-		nativeTheme.themeSource = 'light'
-	} else {
-		nativeTheme.themeSource = 'dark'
-	}
-	return nativeTheme.shouldUseDarkColors
-})
+	ipcMain.on('dark-mode:update', (_, newTheme: 'light' | 'dark') => {
+		nativeTheme.themeSource = newTheme
+	})
 
-ipcMain.on('dark-mode:update', (_, newTheme: 'light' | 'dark') => {
-	nativeTheme.themeSource = newTheme
-})
+	ipcMain.on('dark-mode:system', () => {
+		nativeTheme.themeSource = 'system'
+	})
 
-ipcMain.on('dark-mode:system', () => {
-	nativeTheme.themeSource = 'system'
-})
+	// Quick capture
+	ipcMain.handle('quick-capture:open', () => {
+		spawnQuickCaptureWindow()
+	})
 
-// Notes CRUD handlers
-ipcMain.handle('notes:fetch-all', () => fetchAllNotes())
-ipcMain.handle('notes:create', (_, title, content) => createNote(title, content))
-ipcMain.handle('notes:update', (_, id, title, content) => updateNote(id, title, content))
-ipcMain.handle('notes:delete', (_, id) => deleteNote(id))
+	ipcMain.handle('quick-capture:submit', (_, text: string) => {
+		const note = createNote({
+			title: text.split('\n')[0].slice(0, 100) || 'Quick Note',
+			content: null,
+			content_plain: text,
+			note_type: 'plain',
+		})
+		quickCaptureWindow?.hide()
+		// Notify the main window to refresh
+		appWindow?.webContents.send('notes:refresh')
+		return note
+	})
+}
