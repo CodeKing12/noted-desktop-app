@@ -34,8 +34,10 @@ export function PlainTextEditor(props: { note: Note; readonly?: boolean }) {
 		on(
 			() => props.note.id,
 			() => {
+				debouncedSave.cancel()
 				setText(props.note.content_plain || props.note.content || '')
-			}
+			},
+			{ defer: true }
 		)
 	)
 

@@ -14,59 +14,78 @@ const container = css({
 const searchBar = css({
 	px: '4',
 	py: '3',
-	borderBottom: '1px solid',
-	borderColor: 'border.default',
+	flexShrink: 0,
+})
+
+const searchInputWrap = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '2',
+	px: '3',
+	py: '2',
+	border: '1px solid',
+	borderColor: 'gray.a4',
+	borderRadius: 'lg',
+	bg: 'bg.default',
+	transition: 'all 0.15s',
+	'&:focus-within': {
+		borderColor: 'indigo.a6',
+		boxShadow: '0 0 0 3px {colors.indigo.a2}',
+	},
+})
+
+const searchIconStyle = css({
+	width: '3.5',
+	height: '3.5',
+	color: 'fg.muted',
 	flexShrink: 0,
 })
 
 const searchInput = css({
-	width: '100%',
-	px: '3',
-	py: '2',
-	border: '1px solid',
-	borderColor: 'border.default',
-	borderRadius: 'md',
-	bg: 'bg.default',
+	flex: 1,
+	bg: 'transparent',
 	color: 'fg.default',
 	fontSize: 'sm',
 	outline: 'none',
-	_focus: { borderColor: 'colorPalette.solid.bg' },
+	border: 'none',
 	'&::placeholder': { color: 'fg.muted' },
 })
 
 const scrollArea = css({
 	flex: 1,
 	overflowY: 'auto',
-	px: '2',
 	py: '1',
 })
 
 const resultItem = css({
 	px: '3',
 	py: '2.5',
-	mx: '1',
-	mb: '0.5',
-	borderRadius: 'md',
+	mx: '1.5',
+	mb: '1',
+	borderRadius: 'lg',
 	cursor: 'pointer',
 	transition: 'all 0.15s',
-	_hover: { bg: 'bg.muted' },
+	border: '1px solid transparent',
+	_hover: { bg: 'gray.a2', borderColor: 'gray.a3' },
 })
 
 const resultTitle = css({
 	fontSize: 'sm',
-	fontWeight: 'medium',
+	fontWeight: '500',
 	color: 'fg.default',
-	mb: '0.5',
+	mb: '1',
+	letterSpacing: '-0.01em',
 })
 
 const resultSnippet = css({
 	fontSize: 'xs',
-	color: 'fg.subtle',
+	color: 'fg.muted',
+	lineHeight: '1.5',
 	'& mark': {
-		bg: 'yellow.3',
-		color: 'fg.default',
-		borderRadius: 'sm',
-		px: '0.5',
+		bg: 'indigo.a3',
+		color: 'indigo.11',
+		borderRadius: '2px',
+		px: '1px',
 	},
 })
 
@@ -86,13 +105,16 @@ export function SearchResults() {
 	return (
 		<div class={container}>
 			<div class={searchBar}>
-				<input
-					class={searchInput}
-					value={localQuery()}
-					onInput={(e) => handleInput(e.currentTarget.value)}
-					placeholder="Search notes..."
-					autofocus
-				/>
+				<div class={searchInputWrap}>
+					<SearchIcon class={searchIconStyle} />
+					<input
+						class={searchInput}
+						value={localQuery()}
+						onInput={(e) => handleInput(e.currentTarget.value)}
+						placeholder="Search notes..."
+						autofocus
+					/>
+				</div>
 			</div>
 			<div class={scrollArea}>
 				<Show

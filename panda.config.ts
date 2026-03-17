@@ -1,7 +1,7 @@
 import { green } from "~/theme/colors/green";
 import { red } from "~/theme/colors/red";
-import { sage } from "~/theme/colors/sage";
-import { crimson } from "~/theme/colors/crimson";
+import { slate } from "~/theme/colors/slate";
+import { indigo } from "~/theme/colors/indigo";
 import { animationStyles } from "~/theme/animation-styles";
 import { zIndex } from "~/theme/tokens/z-index";
 import { shadows } from "~/theme/tokens/shadows";
@@ -32,7 +32,12 @@ export default defineConfig({
       tokens: {
         colors: colors,
         durations: durations,
-        zIndex: zIndex
+        zIndex: zIndex,
+        fonts: {
+          body: { value: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+          heading: { value: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" },
+          mono: { value: "'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace" },
+        },
       },
 
       semanticTokens: {
@@ -74,8 +79,29 @@ export default defineConfig({
             }
           },
 
-          crimson: crimson,
-          gray: sage,
+          accent: {
+            value: {
+              _light: "{colors.indigo.9}",
+              _dark: "{colors.indigo.9}"
+            }
+          },
+
+          'accent.subtle': {
+            value: {
+              _light: "{colors.indigo.a3}",
+              _dark: "{colors.indigo.a3}"
+            }
+          },
+
+          'accent.text': {
+            value: {
+              _light: "{colors.indigo.11}",
+              _dark: "{colors.indigo.11}"
+            }
+          },
+
+          indigo: indigo,
+          gray: slate,
           red: red,
           green: green
         },

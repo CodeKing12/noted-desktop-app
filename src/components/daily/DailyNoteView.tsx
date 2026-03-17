@@ -15,17 +15,16 @@ const container = css({
 const scrollArea = css({
 	flex: 1,
 	overflowY: 'auto',
-	px: '2',
 	py: '1',
 })
 
 const dailyInfo = css({
 	px: '4',
-	py: '3',
+	py: '2.5',
 	fontSize: 'sm',
-	color: 'fg.subtle',
-	borderBottom: '1px solid',
-	borderColor: 'border.default',
+	color: 'fg.muted',
+	fontWeight: '500',
+	letterSpacing: '-0.01em',
 })
 
 export function DailyNoteView() {

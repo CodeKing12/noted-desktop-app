@@ -1,4 +1,4 @@
-import { createSignal, Show } from 'solid-js'
+import { createSignal, createEffect, on, Show } from 'solid-js'
 import { css } from '../../../styled-system/css'
 import { useEditorStore } from '../../stores/editor-store'
 import { useAppStore } from '../../stores/app-store'
@@ -16,20 +16,19 @@ const headerStyle = css({
 	gap: '2',
 	px: '8',
 	py: '3',
-	borderBottom: '1px solid',
-	borderColor: 'border.default',
 	flexShrink: 0,
 })
 
 const titleInput = css({
 	flex: 1,
-	fontSize: 'lg',
-	fontWeight: 'semibold',
+	fontSize: '1.125rem',
+	fontWeight: '600',
 	color: 'fg.default',
 	bg: 'transparent',
 	border: 'none',
 	outline: 'none',
 	padding: 0,
+	letterSpacing: '-0.02em',
 	'&::placeholder': { color: 'fg.muted' },
 })
 
@@ -39,38 +38,57 @@ const actionBtn = css({
 	justifyContent: 'center',
 	width: '7',
 	height: '7',
-	borderRadius: 'md',
+	borderRadius: 'lg',
 	cursor: 'pointer',
 	color: 'fg.subtle',
 	transition: 'all 0.15s',
-	_hover: { bg: 'bg.muted', color: 'fg.default' },
+	_hover: { bg: 'gray.a3', color: 'fg.default' },
 })
 
 const iconSize = css({ width: '4', height: '4' })
 
-const savingIndicator = css({
-	fontSize: 'xs',
-	color: 'fg.muted',
+const saveIndicator = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '1.5',
 	flexShrink: 0,
+	animation: 'fade-in 0.2s ease',
+})
+
+const saveDot = css({
+	width: '6px',
+	height: '6px',
+	borderRadius: 'full',
+	bg: 'indigo.9',
+	animation: 'save-pulse 1s ease-in-out infinite',
+})
+
+const saveText = css({
+	fontSize: '11px',
+	color: 'fg.muted',
+	fontWeight: '500',
 })
 
 export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 	const editorStore = useEditorStore()
 	const appStore = useAppStore()
 	const [localTitle, setLocalTitle] = createSignal(props.note.title)
+	let titleTimeout: ReturnType<typeof setTimeout> | null = null
 
 	// Update local title when note changes
-	let prevNoteId = props.note.id
-	const checkNoteChange = () => {
-		if (props.note.id !== prevNoteId) {
-			setLocalTitle(props.note.title)
-			prevNoteId = props.note.id
-		}
-	}
-	// We check on each render
-	checkNoteChange()
-
-	let titleTimeout: ReturnType<typeof setTimeout> | null = null
+	createEffect(
+		on(
+			() => props.note.id,
+			() => {
+				if (titleTimeout) {
+					clearTimeout(titleTimeout)
+					titleTimeout = null
+				}
+				setLocalTitle(props.note.title)
+			},
+			{ defer: true }
+		)
+	)
 
 	function handleTitleChange(value: string) {
 		setLocalTitle(value)
@@ -116,7 +134,10 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 				disabled={props.readonly}
 			/>
 			<Show when={editorStore.isSaving()}>
-				<span class={savingIndicator}>Saving...</span>
+				<div class={saveIndicator}>
+					<div class={saveDot} />
+					<span class={saveText}>Saving</span>
+				</div>
 			</Show>
 			<Show
 				when={!props.readonly}

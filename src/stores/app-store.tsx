@@ -24,6 +24,10 @@ interface AppStore {
 	setSearchQuery: (q: string) => void
 	sidebarCollapsed: () => boolean
 	setSidebarCollapsed: (v: boolean) => void
+	focusMode: () => boolean
+	setFocusMode: (v: boolean) => void
+	commandPaletteOpen: () => boolean
+	setCommandPaletteOpen: (v: boolean) => void
 
 	// Data
 	notes: () => Note[] | undefined
@@ -62,6 +66,8 @@ export function AppStoreProvider(props: ParentProps) {
 	const [selectedNoteId, setSelectedNoteId] = createSignal<string | null>(null)
 	const [searchQuery, setSearchQuery] = createSignal('')
 	const [sidebarCollapsed, setSidebarCollapsed] = createSignal(false)
+	const [focusMode, setFocusMode] = createSignal(false)
+	const [commandPaletteOpen, setCommandPaletteOpen] = createSignal(false)
 
 	const [notes, { refetch: refetchNotes }] = createResource(loadNotes)
 	const [lists, { refetch: refetchLists }] = createResource(loadLists)
@@ -85,6 +91,10 @@ export function AppStoreProvider(props: ParentProps) {
 		setSearchQuery,
 		sidebarCollapsed,
 		setSidebarCollapsed,
+		focusMode,
+		setFocusMode,
+		commandPaletteOpen,
+		setCommandPaletteOpen,
 
 		notes: () => notes(),
 		lists: () => lists(),

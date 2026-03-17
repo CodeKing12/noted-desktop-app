@@ -1,4 +1,4 @@
-import { createMemo, For, Show, createEffect, createSignal, on } from 'solid-js'
+import { createMemo, Index, Show, createEffect, createSignal, on } from 'solid-js'
 import { css } from '../../../styled-system/css'
 import { useAppStore } from '../../stores/app-store'
 import { NoteCard } from '../note-list/NoteCard'
@@ -18,7 +18,6 @@ const scrollArea = css({
 	flex: 1,
 	overflowY: 'auto',
 	overflowX: 'hidden',
-	px: '2',
 	py: '1',
 })
 
@@ -30,7 +29,6 @@ export function NoteList() {
 	const isSearch = () => currentView() === 'search'
 	const isToday = () => currentView() === 'today'
 	const isTrash = () => currentView() === 'trash'
-	const isList = () => typeof currentView() === 'object'
 
 	// Load list-specific notes or trashed notes
 	createEffect(
@@ -111,18 +109,25 @@ export function NoteList() {
 							/>
 						}
 					>
-						<For each={displayNotes()}>
-							{(note) => (
-								<NoteCard
-									note={note}
-									isActive={store.selectedNoteId() === note.id}
-									onClick={() =>
-										store.setSelectedNoteId(note.id)
-									}
-									isTrash={isTrash()}
-								/>
+						<Index each={displayNotes()}>
+							{(note, i) => (
+								<div
+									style={{
+										'animation-delay': `${i * 30}ms`,
+										'animation-fill-mode': 'both',
+									}}
+								>
+									<NoteCard
+										note={note()}
+										isActive={store.selectedNoteId() === note().id}
+										onClick={() =>
+											store.setSelectedNoteId(note().id)
+										}
+										isTrash={isTrash()}
+									/>
+								</div>
 							)}
-						</For>
+						</Index>
 					</Show>
 				</div>
 			</Show>

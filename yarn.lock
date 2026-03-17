@@ -1032,7 +1032,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@floating-ui/dom@npm:^1.7.5":
+"@floating-ui/dom@npm:^1.0.0, @floating-ui/dom@npm:^1.7.5":
   version: 1.7.6
   resolution: "@floating-ui/dom@npm:1.7.6"
   dependencies:
@@ -2199,6 +2199,18 @@ __metadata:
   peerDependencies:
     "@tiptap/core": ^3.20.4
   checksum: 10c0/a5af25b17c978cae60dc029ebf398dca3018e43ff16a7d361f34a780291dcdb5e45cd03578a2460b538d5ac2c9bcadd8a38f35c2d24394282143ad68d36c68f8
+  languageName: node
+  linkType: hard
+
+"@tiptap/extension-bubble-menu@npm:^3.20.4":
+  version: 3.20.4
+  resolution: "@tiptap/extension-bubble-menu@npm:3.20.4"
+  dependencies:
+    "@floating-ui/dom": "npm:^1.0.0"
+  peerDependencies:
+    "@tiptap/core": ^3.20.4
+    "@tiptap/pm": ^3.20.4
+  checksum: 10c0/b448184df97e9a4bdaebdbf98042cb7773242c7e21ce7e31e2772cd2d503d069ce37b1c2dc5fd435fb912e01af2a4b479dae130cfa96bca4ed5ca2a6e8c62750
   languageName: node
   linkType: hard
 
@@ -4135,6 +4147,7 @@ __metadata:
     "@astrojs/solid-js": "npm:^6.0.0"
     "@pandacss/dev": "npm:^1.9.0"
     "@tiptap/core": "npm:^3.20.4"
+    "@tiptap/extension-bubble-menu": "npm:^3.20.4"
     "@tiptap/extension-highlight": "npm:^3.20.4"
     "@tiptap/extension-placeholder": "npm:^3.20.4"
     "@tiptap/extension-task-item": "npm:^3.20.4"

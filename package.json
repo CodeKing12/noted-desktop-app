@@ -25,6 +25,7 @@
     "@ark-ui/solid": "^5.34.1",
     "@astrojs/solid-js": "^6.0.0",
     "@tiptap/core": "^3.20.4",
+    "@tiptap/extension-bubble-menu": "^3.20.4",
     "@tiptap/extension-highlight": "^3.20.4",
     "@tiptap/extension-placeholder": "^3.20.4",
     "@tiptap/extension-task-item": "^3.20.4",

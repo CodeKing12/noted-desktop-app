@@ -1,31 +1,46 @@
 import { css } from '../../../styled-system/css'
 import { useAppStore } from '../../stores/app-store'
 import { Trash2Icon } from 'lucide-solid'
+import { formatDate } from '../../lib/date-utils'
 
 const itemStyle = css({
 	display: 'flex',
 	alignItems: 'center',
 	gap: '3',
 	px: '3',
-	py: '2',
-	borderRadius: 'md',
+	py: '2.5',
+	borderRadius: 'lg',
 	transition: 'all 0.15s',
-	_hover: { bg: 'bg.muted' },
+	_hover: { bg: 'gray.a2' },
 	'&:hover .todo-delete': { opacity: 1 },
 })
 
-const checkbox = css({
-	width: '4',
-	height: '4',
-	accentColor: 'var(--colors-color-palette-solid-bg)',
-	cursor: 'pointer',
+const checkboxWrap = css({
+	position: 'relative',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
 	flexShrink: 0,
+})
+
+const checkbox = css({
+	width: '18px',
+	height: '18px',
+	accentColor: 'var(--colors-indigo-9)',
+	cursor: 'pointer',
+	borderRadius: 'sm',
+	transition: 'transform 0.15s',
+	'&:checked': {
+		animation: 'check-bounce 0.3s ease',
+	},
 })
 
 const textStyle = css({
 	flex: 1,
 	fontSize: 'sm',
 	color: 'fg.default',
+	transition: 'all 0.2s',
+	lineHeight: '1.5',
 	'&[data-completed="true"]': {
 		textDecoration: 'line-through',
 		color: 'fg.muted',
@@ -33,22 +48,25 @@ const textStyle = css({
 })
 
 const dueDateStyle = css({
-	fontSize: 'xs',
-	color: 'fg.subtle',
+	fontSize: '11px',
+	fontWeight: '500',
+	color: 'fg.muted',
 	flexShrink: 0,
 	'&[data-overdue="true"]': {
-		color: 'red.text',
+		color: 'red.9',
 	},
 })
 
 const deleteBtn = css({
 	opacity: 0,
-	transition: 'opacity 0.15s',
+	transition: 'all 0.15s',
 	cursor: 'pointer',
 	color: 'fg.subtle',
-	_hover: { color: 'red.text' },
+	_hover: { color: 'red.9' },
 	display: 'flex',
 	alignItems: 'center',
+	padding: '1',
+	borderRadius: 'md',
 })
 
 export function TodoItem(props: { todo: Todo }) {
@@ -73,12 +91,14 @@ export function TodoItem(props: { todo: Todo }) {
 
 	return (
 		<div class={itemStyle}>
-			<input
-				type="checkbox"
-				class={checkbox}
-				checked={!!props.todo.is_completed}
-				onChange={handleToggle}
-			/>
+			<div class={checkboxWrap}>
+				<input
+					type="checkbox"
+					class={checkbox}
+					checked={!!props.todo.is_completed}
+					onChange={handleToggle}
+				/>
+			</div>
 			<span
 				class={textStyle}
 				data-completed={!!props.todo.is_completed}
@@ -87,7 +107,7 @@ export function TodoItem(props: { todo: Todo }) {
 			</span>
 			{props.todo.due_date && (
 				<span class={dueDateStyle} data-overdue={isOverdue()}>
-					{props.todo.due_date}
+					{formatDate(props.todo.due_date)}
 				</span>
 			)}
 			<span class={`todo-delete ${deleteBtn}`} onClick={handleDelete}>

@@ -10,39 +10,51 @@ const emptyStyle = css({
 	py: '12',
 	px: '4',
 	textAlign: 'center',
+	animation: 'slide-up-fade 0.3s ease-out',
 })
 
 const iconStyle = css({
-	width: '10',
-	height: '10',
-	color: 'fg.muted',
-	mb: '3',
+	width: '12',
+	height: '12',
+	color: 'gray.a5',
+	mb: '4',
+	strokeWidth: '1.25',
 })
 
 const titleStyle = css({
-	fontSize: 'sm',
-	fontWeight: 'medium',
+	fontSize: 'md',
+	fontWeight: '500',
 	color: 'fg.subtle',
-	mb: '1',
+	mb: '1.5',
+	letterSpacing: '-0.01em',
 })
 
 const descStyle = css({
-	fontSize: 'xs',
+	fontSize: 'sm',
 	color: 'fg.muted',
-	mb: '4',
+	mb: '5',
+	lineHeight: '1.5',
 })
 
 const createBtn = css({
-	px: '3',
-	py: '1.5',
-	borderRadius: 'md',
-	fontSize: 'xs',
-	fontWeight: 'medium',
+	px: '4',
+	py: '2',
+	borderRadius: 'lg',
+	fontSize: 'sm',
+	fontWeight: '500',
 	cursor: 'pointer',
-	bg: 'colorPalette.solid.bg',
-	color: 'colorPalette.solid.fg',
+	bg: 'indigo.9',
+	color: 'white',
 	transition: 'all 0.15s',
-	_hover: { bg: 'colorPalette.solid.bg.hover' },
+	_hover: { bg: 'indigo.10', transform: 'translateY(-1px)', boxShadow: '0 4px 12px {colors.indigo.a5}' },
+	_active: { transform: 'translateY(0)' },
+})
+
+const kbdHint = css({
+	fontSize: 'xs',
+	color: 'fg.muted',
+	mt: '3',
+	fontFamily: 'mono',
 })
 
 export function NoteListEmpty(props: {
@@ -67,6 +79,7 @@ export function NoteListEmpty(props: {
 				<button class={createBtn} onClick={props.onCreateNote}>
 					Create Note
 				</button>
+				<span class={kbdHint}>or press Ctrl+K to search</span>
 			</Show>
 		</div>
 	)

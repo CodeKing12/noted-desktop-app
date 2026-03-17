@@ -6,22 +6,24 @@ import { XIcon } from 'lucide-solid'
 const overlay = css({
 	position: 'fixed',
 	inset: 0,
-	bg: 'rgba(0,0,0,0.4)',
+	bg: 'rgba(0,0,0,0.5)',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
 	zIndex: 50,
+	animation: 'overlay-enter 0.15s ease-out',
 })
 
 const dialog = css({
 	bg: 'bg.default',
-	borderRadius: 'lg',
+	borderRadius: 'xl',
 	width: '480px',
 	maxHeight: '80vh',
 	overflow: 'auto',
-	boxShadow: 'lg',
+	boxShadow: '0 24px 64px -8px rgba(0, 0, 0, 0.35), 0 0 0 1px {colors.gray.a3}',
 	border: '1px solid',
-	borderColor: 'border.default',
+	borderColor: 'gray.a4',
+	animation: 'modal-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
 })
 
 const dialogHeader = css({
@@ -31,13 +33,14 @@ const dialogHeader = css({
 	px: '6',
 	py: '4',
 	borderBottom: '1px solid',
-	borderColor: 'border.default',
+	borderColor: 'gray.a3',
 })
 
 const dialogTitle = css({
 	fontSize: 'md',
-	fontWeight: 'semibold',
+	fontWeight: '600',
 	color: 'fg.default',
+	letterSpacing: '-0.01em',
 })
 
 const closeBtn = css({
@@ -46,10 +49,11 @@ const closeBtn = css({
 	justifyContent: 'center',
 	width: '7',
 	height: '7',
-	borderRadius: 'md',
+	borderRadius: 'lg',
 	cursor: 'pointer',
 	color: 'fg.subtle',
-	_hover: { bg: 'bg.muted', color: 'fg.default' },
+	transition: 'all 0.15s',
+	_hover: { bg: 'gray.a3', color: 'fg.default' },
 })
 
 const body = css({
@@ -61,36 +65,51 @@ const settingRow = css({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'space-between',
-	py: '3',
+	py: '4',
 	borderBottom: '1px solid',
-	borderColor: 'border.default',
+	borderColor: 'gray.a3',
 	_last: { borderBottom: 'none' },
 })
 
 const settingLabel = css({
 	fontSize: 'sm',
-	fontWeight: 'medium',
+	fontWeight: '500',
 	color: 'fg.default',
 })
 
 const settingDesc = css({
 	fontSize: 'xs',
-	color: 'fg.subtle',
+	color: 'fg.muted',
 	mt: '0.5',
+	lineHeight: '1.4',
 })
 
 const selectStyle = css({
 	px: '3',
 	py: '1.5',
-	borderRadius: 'md',
+	borderRadius: 'lg',
 	border: '1px solid',
-	borderColor: 'border.default',
+	borderColor: 'gray.a4',
 	bg: 'bg.default',
 	color: 'fg.default',
 	fontSize: 'sm',
 	outline: 'none',
 	cursor: 'pointer',
-	_focus: { borderColor: 'colorPalette.solid.bg' },
+	transition: 'all 0.15s',
+	_focus: { borderColor: 'indigo.a6', boxShadow: '0 0 0 3px {colors.indigo.a2}' },
+})
+
+const toggleBtn = css({
+	px: '3',
+	py: '1.5',
+	borderRadius: 'lg',
+	fontSize: 'sm',
+	fontWeight: '500',
+	cursor: 'pointer',
+	bg: 'gray.a3',
+	color: 'fg.default',
+	transition: 'all 0.15s',
+	_hover: { bg: 'gray.a4' },
 })
 
 export function SettingsDialog() {
@@ -139,27 +158,18 @@ export function SettingsDialog() {
 						</div>
 						<div class={settingRow}>
 							<div>
-								<div class={settingLabel}>Theme</div>
+								<div class={settingLabel}>Appearance</div>
 								<div class={settingDesc}>
 									Toggle between light and dark mode
 								</div>
 							</div>
 							<button
-								class={css({
-									px: '3',
-									py: '1.5',
-									borderRadius: 'md',
-									fontSize: 'sm',
-									cursor: 'pointer',
-									bg: 'bg.muted',
-									color: 'fg.default',
-									_hover: { bg: 'bg.emphasized' },
-								})}
+								class={toggleBtn}
 								onClick={() =>
 									window.electronAPI.darkModeToggle()
 								}
 							>
-								Toggle
+								Toggle Theme
 							</button>
 						</div>
 					</div>

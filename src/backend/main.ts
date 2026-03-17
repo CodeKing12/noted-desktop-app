@@ -46,7 +46,7 @@ const spawnAppWindow = async () => {
 		icon: getAssetPath('icon.png'),
 		title: electronIsDev ? 'Notes - Development' : 'Notes',
 		show: false,
-		frame: true,
+		frame: false,
 		webPreferences: {
 			preload: PRELOAD_PATH,
 			webSecurity: !electronIsDev,
@@ -62,6 +62,14 @@ const spawnAppWindow = async () => {
 	appWindow.show()
 
 	if (electronIsDev) appWindow.webContents.openDevTools({ mode: 'right' })
+
+	// Notify renderer when maximize state changes
+	appWindow.on('maximize', () => {
+		appWindow?.webContents.send('window:maximize-change', true)
+	})
+	appWindow.on('unmaximize', () => {
+		appWindow?.webContents.send('window:maximize-change', false)
+	})
 
 	appWindow.on('closed', () => {
 		appWindow = null
@@ -158,6 +166,25 @@ function registerAppHandlers() {
 
 	ipcMain.on('dark-mode:system', () => {
 		nativeTheme.themeSource = 'system'
+	})
+
+	// Window controls
+	ipcMain.handle('window:minimize', () => {
+		appWindow?.minimize()
+	})
+	ipcMain.handle('window:maximize', () => {
+		if (appWindow?.isMaximized()) {
+			appWindow.unmaximize()
+		} else {
+			appWindow?.maximize()
+		}
+		return appWindow?.isMaximized() ?? false
+	})
+	ipcMain.handle('window:close', () => {
+		appWindow?.close()
+	})
+	ipcMain.handle('window:is-maximized', () => {
+		return appWindow?.isMaximized() ?? false
 	})
 
 	// Quick capture

@@ -76,4 +76,13 @@ contextBridge.exposeInMainWorld('electronAPI', {
 	openQuickCapture: () => ipcRenderer.invoke('quick-capture:open'),
 	submitQuickCapture: (text: string) =>
 		ipcRenderer.invoke('quick-capture:submit', text),
+
+	// Window controls
+	windowMinimize: () => ipcRenderer.invoke('window:minimize'),
+	windowMaximize: () => ipcRenderer.invoke('window:maximize'),
+	windowClose: () => ipcRenderer.invoke('window:close'),
+	windowIsMaximized: () => ipcRenderer.invoke('window:is-maximized'),
+	onWindowMaximizeChange: (callback: (isMaximized: boolean) => void) => {
+		ipcRenderer.on('window:maximize-change', (_: unknown, isMaximized: boolean) => callback(isMaximized))
+	},
 })

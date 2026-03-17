@@ -37,6 +37,7 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 	let containerRef: HTMLDivElement | undefined
 	let editor: Editor | null = null
 	const editorStore = useEditorStore()
+	let isUpdatingContent = false
 
 	const debouncedSave = debounce(async (jsonContent: string) => {
 		const plainText = tiptapToPlaintext(jsonContent)
@@ -62,6 +63,7 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 			content: parseContent(props.note.content),
 			editable: !props.readonly,
 			onUpdate: ({ editor: ed }) => {
+				if (isUpdatingContent) return
 				const json = JSON.stringify(ed.getJSON())
 				debouncedSave(json)
 			},
@@ -75,11 +77,15 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 			() => props.note.id,
 			() => {
 				if (editor) {
+					debouncedSave.cancel()
+					isUpdatingContent = true
 					const content = parseContent(props.note.content)
 					editor.commands.setContent(content)
 					editor.setEditable(!props.readonly)
+					isUpdatingContent = false
 				}
-			}
+			},
+			{ defer: true }
 		)
 	)
 

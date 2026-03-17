@@ -24,10 +24,9 @@ const toolbarStyle = css({
 	px: '4',
 	py: '1.5',
 	borderBottom: '1px solid',
-	borderColor: 'border.default',
+	borderColor: 'gray.a3',
 	flexWrap: 'wrap',
 	flexShrink: 0,
-	bg: 'bg.default',
 })
 
 const toolBtn = css({
@@ -36,21 +35,21 @@ const toolBtn = css({
 	justifyContent: 'center',
 	width: '7',
 	height: '7',
-	borderRadius: 'sm',
+	borderRadius: 'md',
 	cursor: 'pointer',
 	color: 'fg.subtle',
-	transition: 'all 0.1s',
-	_hover: { bg: 'bg.muted', color: 'fg.default' },
+	transition: 'all 0.12s',
+	_hover: { bg: 'gray.a3', color: 'fg.default' },
 	'&[data-active="true"]': {
-		bg: 'colorPalette.subtle.bg',
-		color: 'colorPalette.text',
+		bg: 'indigo.a3',
+		color: 'indigo.11',
 	},
 })
 
 const divider = css({
 	width: '1px',
 	height: '5',
-	bg: 'border.default',
+	bg: 'gray.a3',
 	mx: '1',
 })
 

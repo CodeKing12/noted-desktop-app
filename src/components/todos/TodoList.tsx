@@ -2,18 +2,18 @@ import type { JSX } from 'solid-js'
 import { css } from '../../../styled-system/css'
 
 const sectionStyle = css({
-	mb: '4',
+	mb: '5',
 })
 
 const titleStyle = css({
-	fontSize: 'xs',
-	fontWeight: 'semibold',
+	fontSize: '11px',
+	fontWeight: 'bold',
 	textTransform: 'uppercase',
-	letterSpacing: '0.05em',
+	letterSpacing: '0.08em',
 	color: 'fg.subtle',
 	mb: '1.5',
 	px: '3',
-	'&[data-variant="danger"]': { color: 'red.text' },
+	'&[data-variant="danger"]': { color: 'red.9' },
 	'&[data-variant="muted"]': { color: 'fg.muted' },
 })
 

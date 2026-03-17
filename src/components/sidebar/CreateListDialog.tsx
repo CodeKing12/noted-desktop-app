@@ -5,21 +5,23 @@ import { useAppStore } from '../../stores/app-store'
 const overlay = css({
 	position: 'fixed',
 	inset: 0,
-	bg: 'rgba(0,0,0,0.4)',
+	bg: 'rgba(0,0,0,0.5)',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
 	zIndex: 50,
+	animation: 'overlay-enter 0.15s ease-out',
 })
 
 const dialog = css({
 	bg: 'bg.default',
-	borderRadius: 'lg',
+	borderRadius: 'xl',
 	p: '6',
 	width: '360px',
-	boxShadow: 'lg',
+	boxShadow: '0 24px 64px -8px rgba(0, 0, 0, 0.35), 0 0 0 1px {colors.gray.a3}',
 	border: '1px solid',
-	borderColor: 'border.default',
+	borderColor: 'gray.a4',
+	animation: 'modal-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
 })
 
 const inputStyle = css({
@@ -27,30 +29,47 @@ const inputStyle = css({
 	px: '3',
 	py: '2',
 	border: '1px solid',
-	borderColor: 'border.default',
-	borderRadius: 'md',
+	borderColor: 'gray.a4',
+	borderRadius: 'lg',
 	bg: 'bg.default',
 	color: 'fg.default',
 	fontSize: 'sm',
 	outline: 'none',
-	_focus: { borderColor: 'colorPalette.solid.bg' },
+	transition: 'all 0.15s',
+	_focus: { borderColor: 'indigo.a6', boxShadow: '0 0 0 3px {colors.indigo.a2}' },
 })
 
 const btnRow = css({
 	display: 'flex',
 	justifyContent: 'flex-end',
 	gap: '2',
-	mt: '4',
+	mt: '5',
 })
 
-const btn = css({
+const cancelBtn = css({
 	px: '4',
-	py: '1.5',
-	borderRadius: 'md',
+	py: '2',
+	borderRadius: 'lg',
 	fontSize: 'sm',
-	fontWeight: 'medium',
+	fontWeight: '500',
 	cursor: 'pointer',
 	transition: 'all 0.15s',
+	bg: 'gray.a3',
+	color: 'fg.default',
+	_hover: { bg: 'gray.a4' },
+})
+
+const createBtnStyle = css({
+	px: '4',
+	py: '2',
+	borderRadius: 'lg',
+	fontSize: 'sm',
+	fontWeight: '500',
+	cursor: 'pointer',
+	transition: 'all 0.15s',
+	bg: 'indigo.9',
+	color: 'white',
+	_hover: { bg: 'indigo.10' },
 })
 
 export function CreateListDialog(props: { onClose: () => void }) {
@@ -76,9 +95,10 @@ export function CreateListDialog(props: { onClose: () => void }) {
 				<h3
 					class={css({
 						fontSize: 'md',
-						fontWeight: 'semibold',
+						fontWeight: '600',
 						mb: '4',
 						color: 'fg.default',
+						letterSpacing: '-0.01em',
 					})}
 				>
 					New List
@@ -92,16 +112,10 @@ export function CreateListDialog(props: { onClose: () => void }) {
 					autofocus
 				/>
 				<div class={btnRow}>
-					<button
-						class={`${btn} ${css({ bg: 'bg.muted', color: 'fg.default', _hover: { bg: 'bg.emphasized' } })}`}
-						onClick={props.onClose}
-					>
+					<button class={cancelBtn} onClick={props.onClose}>
 						Cancel
 					</button>
-					<button
-						class={`${btn} ${css({ bg: 'colorPalette.solid.bg', color: 'colorPalette.solid.fg', _hover: { bg: 'colorPalette.solid.bg.hover' } })}`}
-						onClick={handleCreate}
-					>
+					<button class={createBtnStyle} onClick={handleCreate}>
 						Create
 					</button>
 				</div>

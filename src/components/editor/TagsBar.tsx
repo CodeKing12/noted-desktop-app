@@ -11,6 +11,8 @@ const barStyle = css({
 	py: '1.5',
 	flexWrap: 'wrap',
 	flexShrink: 0,
+	borderBottom: '1px solid',
+	borderColor: 'gray.a3',
 })
 
 const tagChip = css({
@@ -19,18 +21,23 @@ const tagChip = css({
 	gap: '1',
 	px: '2',
 	py: '0.5',
-	borderRadius: 'full',
-	fontSize: 'xs',
-	bg: 'bg.muted',
-	color: 'fg.default',
+	borderRadius: 'md',
+	fontSize: '11px',
+	fontWeight: '500',
+	bg: 'indigo.a2',
+	color: 'indigo.11',
+	border: '1px solid',
+	borderColor: 'indigo.a4',
+	transition: 'all 0.15s',
+	_hover: { bg: 'indigo.a3' },
 })
 
 const removeBtn = css({
 	display: 'flex',
 	alignItems: 'center',
 	cursor: 'pointer',
-	color: 'fg.subtle',
-	_hover: { color: 'fg.default' },
+	color: 'indigo.8',
+	_hover: { color: 'indigo.11' },
 })
 
 const addTagBtn = css({
@@ -39,28 +46,29 @@ const addTagBtn = css({
 	gap: '0.5',
 	px: '2',
 	py: '0.5',
-	borderRadius: 'full',
-	fontSize: 'xs',
+	borderRadius: 'md',
+	fontSize: '11px',
+	fontWeight: '500',
 	cursor: 'pointer',
 	color: 'fg.subtle',
 	border: '1px dashed',
-	borderColor: 'border.default',
+	borderColor: 'gray.a5',
 	transition: 'all 0.15s',
-	_hover: { bg: 'bg.muted', color: 'fg.default' },
+	_hover: { bg: 'gray.a2', color: 'fg.default', borderColor: 'gray.a6' },
 })
 
 const tagInput = css({
-	fontSize: 'xs',
+	fontSize: '11px',
 	border: '1px solid',
-	borderColor: 'border.default',
-	borderRadius: 'full',
+	borderColor: 'indigo.a5',
+	borderRadius: 'md',
 	px: '2',
 	py: '0.5',
 	bg: 'bg.default',
 	color: 'fg.default',
 	outline: 'none',
 	width: '100px',
-	_focus: { borderColor: 'colorPalette.solid.bg' },
+	_focus: { borderColor: 'indigo.9', boxShadow: '0 0 0 2px {colors.indigo.a3}' },
 })
 
 export function TagsBar(props: { noteId: string; readonly?: boolean }) {
@@ -123,7 +131,7 @@ export function TagsBar(props: { noteId: string; readonly?: boolean }) {
 								onClick={() => handleRemoveTag(tag.id)}
 							>
 								<XIcon
-									class={css({ width: '3', height: '3' })}
+									class={css({ width: '2.5', height: '2.5' })}
 								/>
 							</span>
 						</Show>
@@ -139,7 +147,7 @@ export function TagsBar(props: { noteId: string; readonly?: boolean }) {
 							onClick={() => setShowInput(true)}
 						>
 							<PlusIcon
-								class={css({ width: '3', height: '3' })}
+								class={css({ width: '2.5', height: '2.5' })}
 							/>
 							Tag
 						</button>

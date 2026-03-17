@@ -10,43 +10,60 @@ const container = css({
 })
 
 const header = css({
-	fontSize: 'sm',
-	fontWeight: 'semibold',
-	color: 'fg.default',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'space-between',
 	mb: '3',
+})
+
+const headerTitle = css({
+	fontSize: 'sm',
+	fontWeight: '600',
+	color: 'fg.default',
+	letterSpacing: '-0.01em',
+})
+
+const headerHint = css({
+	fontSize: '11px',
+	color: 'fg.muted',
+	fontFamily: 'mono',
 })
 
 const textarea = css({
 	flex: 1,
 	resize: 'none',
 	border: '1px solid',
-	borderColor: 'border.default',
-	borderRadius: 'md',
+	borderColor: 'gray.a4',
+	borderRadius: 'lg',
 	px: '3',
-	py: '2',
+	py: '2.5',
 	bg: 'bg.default',
 	color: 'fg.default',
 	fontSize: 'sm',
 	outline: 'none',
-	lineHeight: '1.6',
-	_focus: { borderColor: 'colorPalette.solid.bg' },
+	lineHeight: '1.7',
+	transition: 'all 0.15s',
+	_focus: { borderColor: 'indigo.a6', boxShadow: '0 0 0 3px {colors.indigo.a2}' },
 	'&::placeholder': { color: 'fg.muted' },
 })
 
 const footer = css({
 	display: 'flex',
 	justifyContent: 'flex-end',
-	gap: '2',
 	mt: '3',
 })
 
-const btn = css({
-	px: '3',
-	py: '1.5',
-	borderRadius: 'md',
+const saveBtn = css({
+	px: '4',
+	py: '2',
+	borderRadius: 'lg',
 	fontSize: 'sm',
-	fontWeight: 'medium',
+	fontWeight: '500',
 	cursor: 'pointer',
+	bg: 'indigo.9',
+	color: 'white',
+	transition: 'all 0.15s',
+	_hover: { bg: 'indigo.10' },
 })
 
 export default function QuickCaptureWindow() {
@@ -70,24 +87,20 @@ export default function QuickCaptureWindow() {
 
 	return (
 		<div class={container}>
-			<div class={header}>Quick Capture</div>
+			<div class={header}>
+				<span class={headerTitle}>Quick Capture</span>
+				<span class={headerHint}>Ctrl+Enter to save</span>
+			</div>
 			<textarea
 				class={textarea}
 				value={text()}
 				onInput={(e) => setText(e.currentTarget.value)}
 				onKeyDown={handleKeyDown}
-				placeholder="Jot something down... (Ctrl+Enter to save)"
+				placeholder="Jot something down..."
 				autofocus
 			/>
 			<div class={footer}>
-				<button
-					class={`${btn} ${css({
-						bg: 'colorPalette.solid.bg',
-						color: 'colorPalette.solid.fg',
-						_hover: { bg: 'colorPalette.solid.bg.hover' },
-					})}`}
-					onClick={handleSubmit}
-				>
+				<button class={saveBtn} onClick={handleSubmit}>
 					Save Note
 				</button>
 			</div>

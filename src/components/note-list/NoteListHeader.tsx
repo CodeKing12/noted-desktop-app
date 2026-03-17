@@ -7,16 +7,15 @@ const headerStyle = css({
 	alignItems: 'center',
 	justifyContent: 'space-between',
 	px: '4',
-	py: '3',
-	borderBottom: '1px solid',
-	borderColor: 'border.default',
+	py: '3.5',
 	flexShrink: 0,
 })
 
 const titleStyle = css({
 	fontSize: 'sm',
-	fontWeight: 'semibold',
+	fontWeight: '600',
 	color: 'fg.default',
+	letterSpacing: '-0.01em',
 })
 
 const addBtn = css({
@@ -25,11 +24,11 @@ const addBtn = css({
 	justifyContent: 'center',
 	width: '7',
 	height: '7',
-	borderRadius: 'md',
+	borderRadius: 'lg',
 	cursor: 'pointer',
 	color: 'fg.subtle',
 	transition: 'all 0.15s',
-	_hover: { bg: 'bg.muted', color: 'fg.default' },
+	_hover: { bg: 'indigo.a3', color: 'indigo.11' },
 })
 
 export function NoteListHeader(props: {

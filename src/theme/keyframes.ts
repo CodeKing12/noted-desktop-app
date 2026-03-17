@@ -122,4 +122,61 @@ export const keyframes = defineKeyframes({
       insetBlockStart: 'var(--animate-to-y)',
     },
   },
+
+  // Custom animations for the UI overhaul
+  'slide-up-fade': {
+    from: { opacity: '0', transform: 'translateY(8px)' },
+    to: { opacity: '1', transform: 'translateY(0)' },
+  },
+  'slide-down-fade': {
+    from: { opacity: '0', transform: 'translateY(-8px)' },
+    to: { opacity: '1', transform: 'translateY(0)' },
+  },
+  'slide-in-left': {
+    from: { opacity: '0', transform: 'translateX(-12px)' },
+    to: { opacity: '1', transform: 'translateX(0)' },
+  },
+  'slide-out-right': {
+    from: { opacity: '1', transform: 'translateX(0)' },
+    to: { opacity: '0', transform: 'translateX(12px)' },
+  },
+  'card-enter': {
+    from: { opacity: '0', transform: 'translateY(4px) scale(0.98)' },
+    to: { opacity: '1', transform: 'translateY(0) scale(1)' },
+  },
+  pulse: {
+    '0%, 100%': { opacity: '1' },
+    '50%': { opacity: '0.4' },
+  },
+  'save-pulse': {
+    '0%': { transform: 'scale(1)', opacity: '1' },
+    '50%': { transform: 'scale(1.2)', opacity: '0.7' },
+    '100%': { transform: 'scale(1)', opacity: '1' },
+  },
+  'check-bounce': {
+    '0%': { transform: 'scale(1)' },
+    '30%': { transform: 'scale(1.15)' },
+    '50%': { transform: 'scale(0.95)' },
+    '100%': { transform: 'scale(1)' },
+  },
+  'modal-enter': {
+    from: { opacity: '0', transform: 'scale(0.96) translateY(8px)' },
+    to: { opacity: '1', transform: 'scale(1) translateY(0)' },
+  },
+  'overlay-enter': {
+    from: { opacity: '0' },
+    to: { opacity: '1' },
+  },
+  'progress-fill': {
+    from: { width: '0%' },
+    to: { width: 'var(--progress-width)' },
+  },
+  'accent-bar-enter': {
+    from: { height: '0', opacity: '0' },
+    to: { height: '100%', opacity: '1' },
+  },
+  shimmer: {
+    from: { backgroundPosition: '200% 0' },
+    to: { backgroundPosition: '-200% 0' },
+  },
 })

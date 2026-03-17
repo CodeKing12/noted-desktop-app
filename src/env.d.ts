@@ -161,6 +161,13 @@ interface ElectronAPI {
 	// Quick capture
 	openQuickCapture: () => Promise<void>
 	submitQuickCapture: (text: string) => Promise<void>
+
+	// Window controls
+	windowMinimize: () => Promise<void>
+	windowMaximize: () => Promise<boolean>
+	windowClose: () => Promise<void>
+	windowIsMaximized: () => Promise<boolean>
+	onWindowMaximizeChange: (callback: (isMaximized: boolean) => void) => void
 }
 
 declare global {
