@@ -31,3 +31,4 @@ styled-system-studio
 src/backend/build/
 release/
 out/
+.yarn/install-state.gz
