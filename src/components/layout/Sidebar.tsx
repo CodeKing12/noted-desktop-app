@@ -1,6 +1,7 @@
 import { For, Show, createSignal, createMemo } from 'solid-js'
 import { css } from '../../../styled-system/css'
 import { useAppStore } from '../../stores/app-store'
+import { useEditorStore } from '../../stores/editor-store'
 import { useSettingsStore } from '../../stores/settings-store'
 import {
 	FileTextIcon,
@@ -11,12 +12,10 @@ import {
 	PlusIcon,
 	FolderIcon,
 	SettingsIcon,
-	MoreHorizontalIcon,
 	PanelLeftCloseIcon,
 	PanelLeftOpenIcon,
 	SunIcon,
 } from 'lucide-solid'
-import { CreateListDialog } from '../sidebar/CreateListDialog'
 
 // ─── Styles ───────────────────────────────────────────────
 
@@ -213,6 +212,27 @@ const listName = css({
 	whiteSpace: 'nowrap',
 })
 
+const inlineInput = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '2.5',
+	height: '38px',
+	px: '2.5',
+	mx: '0',
+	borderRadius: 'md',
+	bg: 'gray.a2',
+})
+
+const inlineInputField = css({
+	flex: 1,
+	bg: 'transparent',
+	color: 'fg.default',
+	fontSize: '13.5px',
+	outline: 'none',
+	border: 'none',
+	'&::placeholder': { color: 'fg.muted' },
+})
+
 // ─── Bottom ───────────────────────────────────────────────
 
 const bottomArea = css({
@@ -304,8 +324,10 @@ const collapsedDivider = css({
 
 export function Sidebar() {
 	const store = useAppStore()
+	const editorStore = useEditorStore()
 	const settingsStore = useSettingsStore()
-	const [showCreateList, setShowCreateList] = createSignal(false)
+	const [showInlineInput, setShowInlineInput] = createSignal(false)
+	const [newListName, setNewListName] = createSignal('')
 
 	const isActive = (view: string) => {
 		const current = store.currentView()
@@ -356,7 +378,45 @@ export function Sidebar() {
 			list_id: listId,
 		})
 		store.refetchNotes()
+		editorStore.setIsNewNote(true)
 		store.setSelectedNoteId(note.id)
+	}
+
+	function dismissInlineInput() {
+		setShowInlineInput(false)
+		setNewListName('')
+	}
+
+	async function handleCreateList() {
+		const name = newListName().trim()
+		if (!name) {
+			dismissInlineInput()
+			return
+		}
+		const list = await window.electronAPI.createList(name)
+		store.refetchLists()
+		dismissInlineInput()
+		store.setCurrentView({ type: 'list', listId: list.id })
+		store.setSelectedNoteId(null)
+	}
+
+	function handleListInputKeyDown(e: KeyboardEvent) {
+		if (e.key === 'Enter') {
+			e.preventDefault()
+			handleCreateList()
+		}
+		if (e.key === 'Escape') {
+			dismissInlineInput()
+		}
+	}
+
+	function handleListInputBlur() {
+		// Use a timeout so that if Enter was pressed, handleCreateList runs first
+		setTimeout(() => {
+			if (showInlineInput()) {
+				handleCreateList()
+			}
+		}, 100)
 	}
 
 	return (
@@ -501,7 +561,7 @@ export function Sidebar() {
 					<span class={sectionLabel}>Lists</span>
 					<button
 						class={sectionAddBtn}
-						onClick={() => setShowCreateList(true)}
+						onClick={() => setShowInlineInput(true)}
 						title="New list"
 					>
 						<PlusIcon class={css({ width: '3', height: '3' })} />
@@ -526,11 +586,26 @@ export function Sidebar() {
 									onClick={(e) => handleDeleteList(e, list.id)}
 									title="Delete list"
 								>
-									<MoreHorizontalIcon class={css({ width: '3.5', height: '3.5' })} />
+									<Trash2Icon class={css({ width: '3', height: '3' })} />
 								</div>
 							</div>
 						)}
 					</For>
+					{/* Inline create input */}
+					<Show when={showInlineInput()}>
+						<div class={inlineInput}>
+							<FolderIcon class={iconStyle} style={{ color: 'var(--colors-fg-muted)' }} />
+							<input
+								ref={(el) => requestAnimationFrame(() => el.focus())}
+								class={inlineInputField}
+								value={newListName()}
+								onInput={(e) => setNewListName(e.currentTarget.value)}
+								onKeyDown={handleListInputKeyDown}
+								onBlur={handleListInputBlur}
+								placeholder="List name..."
+							/>
+						</div>
+					</Show>
 				</div>
 
 				{/* Bottom */}
@@ -573,10 +648,6 @@ export function Sidebar() {
 						</button>
 					</div>
 				</div>
-
-				<Show when={showCreateList()}>
-					<CreateListDialog onClose={() => setShowCreateList(false)} />
-				</Show>
 			</div>
 		</Show>
 	)

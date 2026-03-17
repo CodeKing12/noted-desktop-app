@@ -14,7 +14,7 @@ const overlay = css({
 })
 
 const dialog = css({
-	bg: 'bg.default',
+	bg: 'gray.2',
 	borderRadius: 'xl',
 	p: '6',
 	width: '360px',

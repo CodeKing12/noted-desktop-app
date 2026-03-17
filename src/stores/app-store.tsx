@@ -3,6 +3,7 @@ import {
 	useContext,
 	createSignal,
 	createResource,
+	onMount,
 	type ParentProps,
 } from 'solid-js'
 
@@ -74,8 +75,22 @@ export function AppStoreProvider(props: ParentProps) {
 	const [sidebarCollapsed, setSidebarCollapsed] = createSignal(false)
 	const [focusMode, setFocusMode] = createSignal(false)
 	const [commandPaletteOpen, setCommandPaletteOpen] = createSignal(false)
-	const [noteSort, setNoteSort] = createSignal<NoteSortOrder>('updated_at')
+	const [noteSort, _setNoteSort] = createSignal<NoteSortOrder>('updated_at')
 	const [noteTagsMap, setNoteTagsMap] = createSignal<Record<string, Tag[]>>({})
+
+	// Persist sort preference
+	function setNoteSort(sort: NoteSortOrder) {
+		_setNoteSort(sort)
+		window.electronAPI.setSetting('noteSort', sort)
+	}
+
+	// Load saved sort on startup
+	onMount(async () => {
+		const saved = await window.electronAPI.getSetting('noteSort')
+		if (saved === 'updated_at' || saved === 'created_at' || saved === 'title') {
+			_setNoteSort(saved)
+		}
+	})
 
 	async function loadTagsForNotes(ids: string[]) {
 		if (ids.length === 0) return

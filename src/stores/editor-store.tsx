@@ -11,6 +11,8 @@ interface EditorStore {
 	currentNote: () => Note | null
 	setCurrentNote: (note: Note | null) => void
 	isEditing: () => boolean
+	isNewNote: () => boolean
+	setIsNewNote: (v: boolean) => void
 	isSaving: () => boolean
 	setIsSaving: (v: boolean) => void
 	liveTitle: () => string | null
@@ -30,6 +32,7 @@ const EditorStoreContext = createContext<EditorStore>()
 export function EditorStoreProvider(props: ParentProps) {
 	const appStore = useAppStore()
 	const [currentNote, setCurrentNote] = createSignal<Note | null>(null)
+	const [isNewNote, setIsNewNote] = createSignal(false)
 	const [isSaving, setIsSaving] = createSignal(false)
 	const [liveTitle, setLiveTitle] = createSignal<string | null>(null)
 	const [livePreview, setLivePreview] = createSignal<string | null>(null)
@@ -71,6 +74,8 @@ export function EditorStoreProvider(props: ParentProps) {
 		currentNote,
 		setCurrentNote,
 		isEditing,
+		isNewNote,
+		setIsNewNote,
 		isSaving,
 		setIsSaving,
 		liveTitle,

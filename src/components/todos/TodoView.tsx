@@ -5,7 +5,12 @@ import { TodoItem } from './TodoItem'
 import { TodoList } from './TodoList'
 import { getTodayDate, isOverdue, isToday } from '../../lib/date-utils'
 import { EmptyState } from '../shared/EmptyState'
-import { CheckSquareIcon, PlusIcon, XIcon } from 'lucide-solid'
+import {
+	CircleCheckBigIcon,
+	PlusIcon,
+	XIcon,
+	SparklesIcon,
+} from 'lucide-solid'
 
 const container = css({
 	display: 'flex',
@@ -13,14 +18,15 @@ const container = css({
 	height: '100%',
 	overflow: 'auto',
 	animation: 'fade-in 0.2s ease-out',
+	bg: 'bg.default',
 })
 
 const contentWrap = css({
-	maxWidth: '640px',
+	maxWidth: '660px',
 	width: '100%',
 	mx: 'auto',
-	px: '8',
-	py: '6',
+	px: '10',
+	py: '8',
 	display: 'flex',
 	flexDirection: 'column',
 	minHeight: '100%',
@@ -30,17 +36,57 @@ const activeTodosSection = css({})
 
 const completedSection = css({
 	mt: 'auto',
-	pt: '6',
+	pt: '4',
 	borderTop: '1px solid',
-	borderTopColor: 'gray.a3',
+	borderTopColor: 'gray.a2',
 })
 
-const header = css({
-	fontSize: '1.5rem',
-	fontWeight: 'bold',
+// ── Header ──
+
+const headerRow = css({
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'space-between',
+	mb: '1',
+})
+
+const headerTitle = css({
+	fontSize: '26px',
+	fontWeight: '700',
 	color: 'fg.default',
-	mb: '4',
 	letterSpacing: '-0.03em',
+})
+
+const headerStats = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '3',
+})
+
+const statChip = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '1.5',
+	px: '3',
+	py: '1',
+	borderRadius: 'full',
+	fontSize: '12px',
+	fontWeight: '600',
+	bg: 'gray.a2',
+	color: 'fg.subtle',
+})
+
+const statDot = css({
+	width: '6px',
+	height: '6px',
+	borderRadius: 'full',
+})
+
+const headerSubtext = css({
+	fontSize: '14px',
+	color: 'fg.muted',
+	mb: '5',
+	letterSpacing: '-0.01em',
 })
 
 // ── Tab bar ──
@@ -48,27 +94,31 @@ const header = css({
 const tabBar = css({
 	display: 'flex',
 	alignItems: 'center',
-	gap: '1',
-	mb: '5',
+	gap: '1.5',
+	mb: '6',
 	flexWrap: 'wrap',
+	pb: '5',
+	borderBottom: '1px solid',
+	borderBottomColor: 'gray.a2',
 })
 
 const tab = css({
 	display: 'flex',
 	alignItems: 'center',
 	gap: '1.5',
-	px: '3',
-	py: '1.5',
-	borderRadius: 'full',
+	px: '3.5',
+	py: '2',
+	borderRadius: 'md',
 	fontSize: '13px',
 	fontWeight: '500',
 	cursor: 'pointer',
 	color: 'fg.muted',
-	transition: 'all 0.15s',
-	_hover: { bg: 'gray.a3', color: 'fg.default' },
+	transition: 'all 0.18s ease',
+	_hover: { bg: 'gray.a2', color: 'fg.default' },
 	'&[data-active="true"]': {
 		bg: 'indigo.a2',
 		color: 'indigo.11',
+		fontWeight: '600',
 	},
 })
 
@@ -76,7 +126,7 @@ const tabCount = css({
 	fontSize: '11px',
 	fontWeight: '600',
 	color: 'fg.subtle',
-	bg: 'gray.a2',
+	bg: 'gray.a3',
 	borderRadius: 'full',
 	px: '1.5',
 	minWidth: '20px',
@@ -99,9 +149,9 @@ const addTabBtn = css({
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
-	width: '7',
-	height: '7',
-	borderRadius: 'full',
+	width: '8',
+	height: '8',
+	borderRadius: 'md',
 	cursor: 'pointer',
 	color: 'fg.subtle',
 	borderWidth: '1px',
@@ -122,13 +172,13 @@ const tabInput = css({
 	borderWidth: '1px',
 	borderStyle: 'solid',
 	borderColor: 'indigo.a5',
-	borderRadius: 'full',
-	px: '3',
-	py: '1',
+	borderRadius: 'md',
+	px: '3.5',
+	py: '1.5',
 	bg: 'bg.default',
 	color: 'fg.default',
 	outline: 'none',
-	width: '120px',
+	width: '130px',
 	_focus: { borderColor: 'indigo.9', boxShadow: '0 0 0 3px {colors.indigo.a2}' },
 })
 
@@ -141,52 +191,66 @@ const deleteTabBtn = css({
 	borderRadius: 'full',
 	cursor: 'pointer',
 	color: 'fg.subtle',
+	opacity: 0,
 	transition: 'all 0.12s',
 	_hover: { bg: 'red.a2', color: 'red.11' },
+	'[data-active="true"] &, :hover > &': {
+		opacity: 1,
+	},
 })
 
-// ── Progress + add ──
+// ── Progress ──
 
-const progressSection = css({
-	mb: '6',
-})
-
-const progressLabel = css({
+const progressCard = css({
 	display: 'flex',
 	alignItems: 'center',
-	justifyContent: 'space-between',
-	mb: '2',
+	gap: '4',
+	mb: '3',
+	px: '5',
+	py: '4',
+	borderRadius: 'md',
+	bg: 'gray.a2',
 })
 
-const progressText = css({
-	fontSize: 'sm',
-	color: 'fg.muted',
-	fontWeight: '500',
+const progressRing = css({
+	position: 'relative',
+	width: '48px',
+	height: '48px',
+	flexShrink: 0,
 })
 
-const progressPercent = css({
-	fontSize: 'sm',
+const progressRingText = css({
+	position: 'absolute',
+	inset: 0,
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	fontSize: '12px',
+	fontWeight: '700',
+	color: 'fg.default',
+})
+
+const progressInfo = css({
+	flex: 1,
+})
+
+const progressTitle = css({
+	fontSize: '14px',
 	fontWeight: '600',
-	color: 'indigo.11',
+	color: 'fg.default',
+	mb: '0.5',
 })
 
-const progressTrack = css({
-	height: '6px',
-	borderRadius: 'full',
-	bg: 'gray.a3',
-	overflow: 'hidden',
+const progressSubtext = css({
+	fontSize: '12px',
+	color: 'fg.muted',
 })
 
-const progressBar = css({
-	height: '100%',
-	borderRadius: 'full',
-	bg: 'indigo.9',
-	transition: 'width 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-})
+// ── Add input ──
 
 const addRow = css({
 	display: 'flex',
-	gap: '2',
+	gap: '2.5',
 	mb: '6',
 })
 
@@ -194,43 +258,83 @@ const addInputWrap = css({
 	flex: 1,
 	display: 'flex',
 	alignItems: 'center',
-	px: '3',
-	py: '2',
-	borderWidth: '1px',
-	borderStyle: 'solid',
-	borderColor: 'gray.a4',
-	borderRadius: 'lg',
-	bg: 'bg.default',
-	transition: 'all 0.15s',
+	gap: '2.5',
+	px: '4',
+	py: '3',
+	borderRadius: 'md',
+	bg: 'gray.a2',
+	transition: 'all 0.2s ease',
 	'&:focus-within': {
-		borderColor: 'indigo.a6',
-		boxShadow: '0 0 0 3px {colors.indigo.a2}',
+		bg: 'bg.default',
+		boxShadow: '0 0 0 2px var(--colors-indigo-a4)',
 	},
+})
+
+const addCircle = css({
+	width: '20px',
+	height: '20px',
+	borderRadius: 'full',
+	borderWidth: '2px',
+	borderStyle: 'dashed',
+	borderColor: 'gray.a5',
+	flexShrink: 0,
 })
 
 const addInput = css({
 	flex: 1,
 	bg: 'transparent',
 	color: 'fg.default',
-	fontSize: 'sm',
+	fontSize: '14px',
 	outline: 'none',
 	border: 'none',
+	letterSpacing: '-0.01em',
 	'&::placeholder': { color: 'fg.muted' },
 })
 
 const addBtn = css({
-	px: '4',
-	py: '2',
-	borderRadius: 'lg',
-	fontSize: 'sm',
-	fontWeight: '500',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	px: '5',
+	py: '3',
+	borderRadius: 'sm',
+	fontSize: '14px',
+	fontWeight: '600',
 	cursor: 'pointer',
 	bg: 'indigo.9',
 	color: 'white',
-	transition: 'all 0.15s',
-	_hover: { bg: 'indigo.10', transform: 'translateY(-1px)', boxShadow: '0 4px 12px {colors.indigo.a5}' },
+	gap: '1.5',
+	transition: 'all 0.18s ease',
+	_hover: { bg: 'indigo.10', transform: 'translateY(-1px)', boxShadow: '0 6px 16px -4px {colors.indigo.a5}' },
 	_active: { transform: 'translateY(0)' },
 })
+
+// ── Ring SVG helper ──
+
+function ProgressRingSVG(props: { pct: number }) {
+	const r = 19
+	const c = 2 * Math.PI * r
+	const offset = () => c - (props.pct / 100) * c
+
+	return (
+		<svg width="48" height="48" viewBox="0 0 48 48">
+			<circle cx="24" cy="24" r={r} fill="none" stroke="var(--colors-gray-a3)" stroke-width="4" />
+			<circle
+				cx="24"
+				cy="24"
+				r={r}
+				fill="none"
+				stroke="var(--colors-indigo-9)"
+				stroke-width="4"
+				stroke-linecap="round"
+				stroke-dasharray={c}
+				stroke-dashoffset={offset()}
+				transform="rotate(-90 24 24)"
+				style={{ transition: 'stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1)' }}
+			/>
+		</svg>
+	)
+}
 
 export function TodoView() {
 	const store = useAppStore()
@@ -245,7 +349,7 @@ export function TodoView() {
 	// Filter todos by selected list
 	const filteredTodos = createMemo(() => {
 		const listId = selectedListId()
-		if (listId === null) return allTodos() // "All" tab
+		if (listId === null) return allTodos()
 		return allTodos().filter((t) => t.todo_list_id === listId)
 	})
 
@@ -276,6 +380,7 @@ export function TodoView() {
 		filteredTodos().filter((t) => t.is_completed)
 	)
 
+	const activeCount = () => filteredTodos().length - completed().length
 	const totalCount = () => filteredTodos().length
 	const completedCount = () => completed().length
 	const progressPct = () => {
@@ -283,7 +388,6 @@ export function TodoView() {
 		return Math.round((completedCount() / totalCount()) * 100)
 	}
 
-	// Count per list (for tab badges)
 	const countForList = (listId: string | null) => {
 		if (listId === null) return allTodos().filter((t) => !t.is_completed).length
 		return allTodos().filter((t) => t.todo_list_id === listId && !t.is_completed).length
@@ -336,10 +440,35 @@ export function TodoView() {
 
 	const hasTodos = () => filteredTodos().length > 0
 
+	const progressMessage = () => {
+		const pct = progressPct()
+		if (pct === 100) return 'All done! Time to celebrate.'
+		if (pct >= 75) return 'Almost there, keep it up!'
+		if (pct >= 50) return 'Halfway through, nice progress.'
+		if (pct > 0) return "You're getting started, keep going!"
+		return `${activeCount()} ${activeCount() === 1 ? 'task' : 'tasks'} waiting for you.`
+	}
+
 	return (
 		<div class={container}>
 			<div class={contentWrap}>
-				<h1 class={header}>To-dos</h1>
+				{/* Header */}
+				<div class={headerRow}>
+					<h1 class={headerTitle}>To-dos</h1>
+					<Show when={hasTodos()}>
+						<div class={headerStats}>
+							<div class={statChip}>
+								<div class={statDot} style={{ background: 'var(--colors-indigo-9)' }} />
+								{activeCount()} active
+							</div>
+							<div class={statChip}>
+								<div class={statDot} style={{ background: 'var(--colors-green-9)' }} />
+								{completedCount()} done
+							</div>
+						</div>
+					</Show>
+				</div>
+				<p class={headerSubtext}>{progressMessage()}</p>
 
 				{/* Tab bar */}
 				<div class={tabBar}>
@@ -389,7 +518,7 @@ export function TodoView() {
 								onClick={() => setShowNewList(true)}
 								title="New list"
 							>
-								<PlusIcon class={css({ width: '3.5', height: '3.5' })} />
+								<PlusIcon class={css({ width: '4', height: '4' })} />
 							</button>
 						}
 					>
@@ -407,46 +536,32 @@ export function TodoView() {
 					</Show>
 				</div>
 
-				{/* Progress bar */}
-				<Show when={hasTodos()}>
-					<div class={progressSection}>
-						<div class={progressLabel}>
-							<span class={progressText}>
-								{completedCount()} of {totalCount()} completed
-							</span>
-							<span class={progressPercent}>{progressPct()}%</span>
-						</div>
-						<div class={progressTrack}>
-							<div
-								class={progressBar}
-								style={{ width: `${progressPct()}%` }}
-							/>
-						</div>
-					</div>
-				</Show>
-
+				{/* Add todo */}
 				<div class={addRow}>
 					<div class={addInputWrap}>
+						<div class={addCircle} />
 						<input
 							class={addInput}
 							value={newTodoText()}
 							onInput={(e) => setNewTodoText(e.currentTarget.value)}
 							onKeyDown={handleKeyDown}
-							placeholder="Add a new to-do..."
+							placeholder="What needs to be done?"
 						/>
 					</div>
 					<button class={addBtn} onClick={handleAddTodo}>
+						<PlusIcon class={css({ width: '4', height: '4' })} />
 						Add
 					</button>
 				</div>
 
+				{/* Todo sections */}
 				<Show
 					when={hasTodos()}
 					fallback={
 						<EmptyState
-							icon={CheckSquareIcon}
-							title="All caught up!"
-							description="Add your first to-do above to get started"
+							icon={SparklesIcon}
+							title="All clear!"
+							description="Your to-do list is empty. Add something above to get started."
 							hint="Press Enter to add quickly"
 						/>
 					}
@@ -483,6 +598,22 @@ export function TodoView() {
 					</div>
 					<Show when={completed().length > 0}>
 						<div class={completedSection}>
+							<div class={progressCard}>
+								<div class={progressRing}>
+									<ProgressRingSVG pct={progressPct()} />
+									<span class={progressRingText}>{progressPct()}%</span>
+								</div>
+								<div class={progressInfo}>
+									<div class={progressTitle}>
+										{completedCount()} of {totalCount()} completed
+									</div>
+									<div class={progressSubtext}>
+										{progressPct() === 100
+											? 'Everything is checked off!'
+											: `${activeCount()} ${activeCount() === 1 ? 'task' : 'tasks'} remaining`}
+									</div>
+								</div>
+							</div>
 							<TodoList title="Completed" variant="muted">
 								<For each={completed()}>
 									{(todo) => <TodoItem todo={todo} />}

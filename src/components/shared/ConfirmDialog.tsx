@@ -4,22 +4,24 @@ import { css } from '../../../styled-system/css'
 const overlay = css({
 	position: 'fixed',
 	inset: 0,
-	bg: 'rgba(0,0,0,0.4)',
+	bg: 'rgba(0,0,0,0.5)',
 	display: 'flex',
 	alignItems: 'center',
 	justifyContent: 'center',
 	zIndex: 50,
+	animation: 'overlay-enter 0.15s ease-out',
 })
 
 const dialog = css({
-	bg: 'bg.default',
+	bg: 'gray.2',
 	borderRadius: 'lg',
 	p: '6',
 	width: '360px',
-	boxShadow: 'lg',
+	boxShadow: '0 24px 64px -8px rgba(0, 0, 0, 0.35), 0 0 0 1px {colors.gray.a3}',
 	borderWidth: '1px',
 	borderStyle: 'solid',
-	borderColor: 'border.default',
+	borderColor: 'gray.a3',
+	animation: 'modal-enter 0.2s cubic-bezier(0.16, 1, 0.3, 1)',
 })
 
 const titleStyle = css({

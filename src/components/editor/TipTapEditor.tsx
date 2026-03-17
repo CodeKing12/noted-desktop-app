@@ -34,6 +34,9 @@ export function getEditorInstance(): Editor | null {
 	return currentEditor
 }
 
+// Store cursor positions per note ID
+const cursorPositions = new Map<string, { from: number; to: number }>()
+
 export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 	let containerRef: HTMLDivElement | undefined
 	let editor: Editor | null = null
@@ -74,18 +77,44 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 	})
 
 	// When the note changes (different note selected), update editor content
+	let previousNoteId: string | null = null
 	createEffect(
 		on(
 			() => props.note.id,
-			() => {
+			(newId) => {
 				if (editor) {
+					// Save cursor position for the previous note
+					if (previousNoteId) {
+						const { from, to } = editor.state.selection
+						cursorPositions.set(previousNoteId, { from, to })
+					}
+
 					debouncedSave.cancel()
 					isUpdatingContent = true
 					const content = parseContent(props.note.content)
 					editor.commands.setContent(content)
 					editor.setEditable(!props.readonly)
 					isUpdatingContent = false
+
+					// Restore cursor position for the new note (skip for new notes — title gets focus)
+					if (!editorStore.isNewNote()) {
+						const saved = cursorPositions.get(newId)
+						requestAnimationFrame(() => {
+							if (editor) {
+								if (saved) {
+									const docSize = editor.state.doc.content.size
+									const from = Math.min(saved.from, docSize)
+									const to = Math.min(saved.to, docSize)
+									editor.commands.setTextSelection({ from, to })
+								} else {
+									editor.commands.setTextSelection(editor.state.doc.content.size)
+								}
+								editor.commands.focus()
+							}
+						})
+					}
 				}
+				previousNoteId = newId
 			},
 			{ defer: true }
 		)

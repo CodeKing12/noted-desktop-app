@@ -1,6 +1,7 @@
 import { createMemo, Index, Show, createEffect, createSignal, on } from 'solid-js'
 import { css } from '../../../styled-system/css'
 import { useAppStore } from '../../stores/app-store'
+import { useEditorStore } from '../../stores/editor-store'
 import { NoteCard } from '../note-list/NoteCard'
 import { NoteListHeader } from '../note-list/NoteListHeader'
 import { NoteListEmpty } from '../note-list/NoteListEmpty'
@@ -43,6 +44,7 @@ const pinnedIcon = css({
 
 export function NoteList() {
 	const store = useAppStore()
+	const editorStore = useEditorStore()
 	const [listNotes, setListNotes] = createSignal<Note[]>([])
 
 	const currentView = () => store.currentView()
@@ -127,6 +129,7 @@ export function NoteList() {
 			list_id: listId,
 		})
 		store.refetchNotes()
+		editorStore.setIsNewNote(true)
 		store.setSelectedNoteId(note.id)
 		// If in a list view, reload list notes
 		if (typeof view === 'object') {

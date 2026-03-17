@@ -103,6 +103,7 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 	const appStore = useAppStore()
 	const [localTitle, setLocalTitle] = createSignal(props.note.title)
 	let titleTimeout: ReturnType<typeof setTimeout> | null = null
+	let titleInputRef: HTMLInputElement | undefined
 
 	// Update local title when note changes
 	createEffect(
@@ -114,10 +115,30 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 					titleTimeout = null
 				}
 				setLocalTitle(props.note.title)
+
+				// Auto-focus and select title for new notes
+				if (editorStore.isNewNote()) {
+					requestAnimationFrame(() => {
+						if (titleInputRef) {
+							titleInputRef.focus()
+							titleInputRef.select()
+						}
+						editorStore.setIsNewNote(false)
+					})
+				}
 			},
 			{ defer: true }
 		)
 	)
+
+	// Also handle the initial mount for a new note
+	requestAnimationFrame(() => {
+		if (editorStore.isNewNote() && titleInputRef) {
+			titleInputRef.focus()
+			titleInputRef.select()
+			editorStore.setIsNewNote(false)
+		}
+	})
 
 	const wordCount = createMemo(() => {
 		const plain = props.note.content_plain
@@ -163,6 +184,7 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 	return (
 		<div class={headerStyle}>
 			<input
+				ref={titleInputRef}
 				class={titleInput}
 				value={localTitle()}
 				onInput={(e) => handleTitleChange(e.currentTarget.value)}
