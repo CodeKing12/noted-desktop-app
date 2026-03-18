@@ -119,3 +119,6 @@ Build targets are configured in `electron-builder.yml`:
 - **Windows**: NSIS installer
 - **Linux**: AppImage
 - **macOS**: DMG
+
+
+<!-- build:dir is the fastest build option, build:fast is second fastest -->
