@@ -13,6 +13,7 @@ interface Note {
 	daily_date: string | null
 	is_pinned: number
 	is_trashed: number
+	spellcheck: number
 	created_at: string
 	updated_at: string
 }
@@ -114,6 +115,7 @@ interface ElectronAPI {
 			note_type?: 'rich' | 'plain'
 			list_id?: string | null
 			is_pinned?: boolean
+			spellcheck?: boolean
 		}
 	) => Promise<Note | undefined>
 	trashNote: (id: string) => Promise<void>
@@ -192,6 +194,9 @@ interface ElectronAPI {
 	popoutClose: () => Promise<void>
 	popoutUpdateSkipTaskbar: (skip: boolean) => Promise<void>
 	onPopoutTodosChanged: (callback: () => void) => void
+
+	// Notes refresh
+	onNotesRefresh: (callback: () => void) => void
 
 	// Window controls
 	windowMinimize: () => Promise<void>

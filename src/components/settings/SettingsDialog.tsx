@@ -438,7 +438,7 @@ export function SettingsDialog() {
 					{/* Footer */}
 					<div class={footer}>
 						<img
-							src="/noted-logo.svg"
+							src="./noted-logo.svg"
 							alt="noted"
 							style={{ height: '14px' }}
 							draggable={false}

@@ -57,6 +57,7 @@ export function PlainTextEditor(props: { note: Note; readonly?: boolean }) {
 			onInput={handleInput}
 			placeholder="Start writing..."
 			disabled={props.readonly}
+			spellcheck={!!props.note.spellcheck}
 		/>
 	)
 }

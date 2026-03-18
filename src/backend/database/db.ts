@@ -203,6 +203,13 @@ function runMigrations() {
 		setSchemaVersion(3)
 	}
 
+	if (currentVersion < 4) {
+		db.exec(`
+			ALTER TABLE notes ADD COLUMN spellcheck INTEGER DEFAULT 1;
+		`)
+		setSchemaVersion(4)
+	}
+
 }
 
 runMigrations()

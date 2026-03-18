@@ -172,6 +172,7 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 			},
 		})
 		currentEditor = editor
+		editor.view.dom.spellcheck = !!props.note.spellcheck
 
 		// Prevent task checkboxes from stealing editor focus/cursor
 		containerRef!.addEventListener('mousedown', (e) => {
@@ -249,6 +250,18 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 			(readonly) => {
 				if (editor) {
 					editor.setEditable(!readonly)
+				}
+			}
+		)
+	)
+
+	// Apply spellcheck attribute directly on the ProseMirror contenteditable element
+	createEffect(
+		on(
+			() => props.note.spellcheck,
+			(spellcheck) => {
+				if (editor) {
+					editor.view.dom.spellcheck = !!spellcheck
 				}
 			}
 		)

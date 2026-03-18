@@ -99,6 +99,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
 		ipcRenderer.on('popout:todos-changed', () => callback())
 	},
 
+	// Notes refresh
+	onNotesRefresh: (callback: () => void) => {
+		ipcRenderer.on('notes:refresh', () => callback())
+	},
+
 	// Window controls
 	windowMinimize: () => ipcRenderer.invoke('window:minimize'),
 	windowMaximize: () => ipcRenderer.invoke('window:maximize'),

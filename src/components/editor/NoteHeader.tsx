@@ -10,6 +10,8 @@ import {
 	RotateCcwIcon,
 	XIcon,
 	ExternalLinkIcon,
+	SpellCheckIcon,
+	SpellCheck2Icon,
 } from 'lucide-solid'
 
 const headerStyle = css({
@@ -156,6 +158,13 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 		}, 300)
 	}
 
+	async function handleSpellcheck() {
+		await window.electronAPI.updateNote(props.note.id, {
+			spellcheck: !props.note.spellcheck,
+		})
+		editorStore.loadNote(props.note.id)
+	}
+
 	async function handlePin() {
 		await window.electronAPI.updateNote(props.note.id, {
 			is_pinned: !props.note.is_pinned,
@@ -246,6 +255,18 @@ export function NoteHeader(props: { note: Note; readonly?: boolean }) {
 							title="Pop out note"
 						>
 							<ExternalLinkIcon class={iconSize} />
+						</button>
+						<button
+							class={actionBtn}
+							onClick={handleSpellcheck}
+							title={props.note.spellcheck ? 'Disable spellcheck' : 'Enable spellcheck'}
+						>
+							<Show
+								when={props.note.spellcheck}
+								fallback={<SpellCheckIcon class={iconSize} />}
+							>
+								<SpellCheck2Icon class={iconSize} />
+							</Show>
 						</button>
 						<button class={actionBtn} onClick={handlePin} title="Pin/Unpin">
 							<Show

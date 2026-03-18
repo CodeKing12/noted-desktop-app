@@ -11,6 +11,7 @@ export interface Note {
 	daily_date: string | null
 	is_pinned: number
 	is_trashed: number
+	spellcheck: number
 	created_at: string
 	updated_at: string
 }
@@ -99,6 +100,7 @@ export function updateNote(
 		note_type?: 'rich' | 'plain'
 		list_id?: string | null
 		is_pinned?: boolean
+		spellcheck?: boolean
 	}
 ): Note | undefined {
 	const existing = fetchNoteById(id)
@@ -118,11 +120,17 @@ export function updateNote(
 				? 1
 				: 0
 			: existing.is_pinned
+	const spellcheck =
+		data.spellcheck !== undefined
+			? data.spellcheck
+				? 1
+				: 0
+			: existing.spellcheck
 
 	db.prepare(
 		`UPDATE notes SET title = ?, content = ?, content_plain = ?, note_type = ?,
-		 list_id = ?, is_pinned = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
-	).run(title, content, contentPlain, noteType, listId, isPinned, id)
+		 list_id = ?, is_pinned = ?, spellcheck = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?`
+	).run(title, content, contentPlain, noteType, listId, isPinned, spellcheck, id)
 
 	// Update FTS
 	db.prepare('DELETE FROM notes_fts WHERE note_id = ?').run(id)

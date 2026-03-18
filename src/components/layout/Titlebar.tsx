@@ -94,7 +94,7 @@ export function Titlebar() {
 			{/* Brand */}
 			<div class={brandSection} style={{ '-webkit-app-region': 'drag' }}>
 				<img
-					src="/noted-logo.svg"
+					src="./noted-logo.svg"
 					alt="noted"
 					style={{ height: '22px', 'pointer-events': 'none' }}
 					draggable={false}

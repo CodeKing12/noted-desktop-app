@@ -100,6 +100,10 @@ export function AppStoreProvider(props: ParentProps) {
 		window.electronAPI.onPopoutTodosChanged(() => {
 			refetchTodos()
 		})
+
+		window.electronAPI.onNotesRefresh(() => {
+			refetchNotes()
+		})
 	})
 
 	async function loadTagsForNotes(ids: string[]) {

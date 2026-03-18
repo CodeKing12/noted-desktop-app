@@ -1,124 +1,106 @@
-# AstroJS + Electron Template
+# noted.
 
-A template for building desktop applications with **Astro**, **SolidJS**, **Electron**, **Park UI** (Ark UI + Panda CSS), and **SQLite**.
+A minimal, distraction-free note-taking app for desktop. Built by [Voyager Technologies](https://github.com/vygr-labs).
+
+## Features
+
+- **Rich text editing** — Headings, bold, italic, underline, strikethrough, highlight, code blocks, blockquotes, and task lists (powered by TipTap)
+- **Plain text mode** — Switch any note to a simple plain text editor
+- **Daily notes** — Auto-organized by date with a dedicated "Today" view
+- **Todos** — Built-in task management with dedicated todo lists and completion tracking
+- **Tags** — Tag notes for flexible organization
+- **Custom lists** — Organize notes into lists with custom colors and icons
+- **Quick capture** — Global shortcut (`Ctrl+Shift+N`) to jot down a note from anywhere
+- **Popout windows** — Pop out notes or todos into separate pinnable windows
+- **Focus mode** — Hide the sidebar and note list for distraction-free writing
+- **Full-text search** — Search across all notes instantly, plus in-note search (`Ctrl+F`)
+- **Themes** — Light, Dark, Warm, and Slate themes with system preference support
+- **Per-note spellcheck** — Toggle spellcheck on or off for individual notes
+- **Local storage** — All data stored locally in SQLite. Your data stays on your machine.
+- **Keyboard shortcuts** — `Ctrl+B` toggle sidebar, `Ctrl+[` toggle note list, `Ctrl+Shift+F` command palette, and more
+
+## Download
+
+The Windows installer is available on the [Releases](../../releases) page. macOS and Linux builds can be built from source (see below).
 
 ## Tech Stack
 
-- **[Astro](https://astro.build/)** — Static site generator for the frontend
-- **[SolidJS](https://www.solidjs.com/)** — Reactive UI framework
-- **[Electron](https://www.electronjs.org/)** — Desktop app shell
-- **[Park UI](https://park-ui.com/)** — Component library (Ark UI + Panda CSS)
-- **[Panda CSS](https://panda-css.com/)** — Type-safe CSS-in-JS
-- **[better-sqlite3](https://github.com/WiseLibs/better-sqlite3)** — SQLite database
-
-## Prerequisites
-
-- [Node.js](https://nodejs.org/) (v18+)
-- npm
+- [Electron](https://www.electronjs.org/) — Desktop application framework
+- [Astro](https://astro.build/) — Frontend build tool
+- [Solid.js](https://www.solidjs.com/) — Reactive UI framework
+- [TipTap](https://tiptap.dev/) — Rich text editor
+- [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) — Local database
+- [Panda CSS](https://panda-css.com/) — Styling
 
 ## Getting Started
 
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v20+)
+- [Yarn](https://yarnpkg.com/) 4
+
+### Install dependencies
+
 ```bash
-# Clone the template
-git clone https://github.com/your-username/astrojs-electron-template.git
-cd astrojs-electron-template
-
-# Install dependencies
-npm install
-
-# Generate Panda CSS styled-system
-npx panda codegen
-
-# Start the app (Astro dev server + Electron)
-npm start
+yarn install
 ```
 
-## Project Structure
+### Development
 
-```
-├── assets/                  # Electron build resources (icons)
-├── public/                  # Static web assets
-├── src/
-│   ├── assets/              # Dev-time assets & global CSS
-│   ├── backend/             # Electron main process
-│   │   ├── database/        # SQLite database & operations
-│   │   ├── main.ts          # Electron entry point
-│   │   ├── preload.ts       # IPC bridge (contextBridge)
-│   │   └── constants.ts     # Path constants
-│   ├── components/          # SolidJS components
-│   │   ├── ui/              # Park UI components
-│   │   └── Demo.tsx         # Example component
-│   ├── layouts/             # Astro layouts
-│   ├── pages/               # Astro pages (file-based routing)
-│   └── theme/               # Panda CSS theme configuration
-├── styled-system/           # Generated Panda CSS (gitignored)
-├── astro.config.mjs
-├── panda.config.ts
-├── electron-builder.yml
-└── package.json
+```bash
+yarn start
 ```
 
-## Customization
+This starts the Astro dev server and launches Electron in development mode.
 
-### Add a new page
+### Building
 
-Create a `.astro` file in `src/pages/`. Astro uses file-based routing.
-
-### Add a SolidJS component
-
-Create a `.tsx` file in `src/components/` and use it in an Astro page with `client:load`:
-
-```astro
----
-import MyComponent from '../components/MyComponent.tsx';
----
-<MyComponent client:load />
+```bash
+yarn build
 ```
 
-### Add an IPC handler
+The installer will be output to the `release/` directory.
 
-1. Add the handler in `src/backend/main.ts`:
-   ```ts
-   ipcMain.handle('my-channel', (_, arg) => { /* ... */ })
-   ```
-2. Expose it in `src/backend/preload.ts`:
-   ```ts
-   myMethod: (arg) => ipcRenderer.invoke('my-channel', arg),
-   ```
-3. Add the type in `src/env.d.ts` and call it from the renderer:
-   ```ts
-   window.electronAPI.myMethod(arg)
-   ```
-
-### Add a database table
-
-1. Add the schema in `src/backend/database/db.ts`
-2. Create operations in a new file under `src/backend/database/`
-3. Wire up IPC handlers in `main.ts` and `preload.ts`
+Build targets are configured in `electron-builder.yml`:
+- **Windows** — NSIS installer
+- **Linux** — AppImage
+- **macOS** — DMG
 
 ## Scripts
 
 | Command | Action |
 |:--------|:-------|
-| `npm start` | Start dev server + Electron |
-| `npm run dev` | Astro dev server only |
-| `npm run build` | Build for production (Astro + Electron) |
-| `npm run backend:build` | Compile backend TypeScript |
-| `npm run lint` | Check formatting with Prettier |
-| `npm run lint:fix` | Fix formatting |
+| `yarn start` | Start dev server + Electron |
+| `yarn dev` | Astro dev server only |
+| `yarn build` | Build for production (Astro + Electron) |
+| `yarn build:fast` | Build without code signing |
+| `yarn backend:build` | Compile backend TypeScript |
+| `yarn lint` | Check formatting with Prettier |
+| `yarn lint:fix` | Fix formatting |
 
-## Building & Packaging
+## Project Structure
 
-```bash
-npm run build
+```
+src/
+  backend/           Electron main process
+    database/        SQLite schema, migrations, and operations
+    ipc/             IPC handler registration
+    main.ts          Electron entry point
+    preload.ts       IPC bridge (contextBridge)
+    constants.ts     Path constants
+  components/
+    editor/          TipTap editor, toolbar, note header, tags
+    layout/          App shell, sidebar, editor pane, titlebar
+    popout/          Popout window views
+    settings/        Settings dialog
+  stores/            App and editor state management
+  lib/               Utility functions
+  pages/             Astro pages (index, quick-capture, popout)
+  theme/             Panda CSS theme and recipes
+assets/              App icons and resources
+installer/           NSIS installer customization
 ```
 
-This builds the Astro frontend, compiles the backend TypeScript, and packages the app with electron-builder. Output goes to the `release/` directory.
+## License
 
-Build targets are configured in `electron-builder.yml`:
-- **Windows**: NSIS installer
-- **Linux**: AppImage
-- **macOS**: DMG
-
-
-<!-- build:dir is the fastest build option, build:fast is second fastest -->
+CC-BY-NC-4.0
