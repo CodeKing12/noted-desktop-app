@@ -2,7 +2,9 @@
   "name": "astrojs-electron-template",
   "type": "module",
   "version": "1.0.0",
-  "description": "Template for building desktop apps with Astro, SolidJS, Electron, and Park UI",
+  "description": "A minimal, distraction-free note-taking app",
+  "author": "Voyager Technologies Limited",
+  "license": "CC-BY-NC-4.0",
   "main": "src/backend/build/main.js",
   "scripts": {
     "prepare": "panda codegen",

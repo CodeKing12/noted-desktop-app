@@ -79,7 +79,7 @@ export function NotedLogo(props: { size?: number; class?: string }) {
 					cx="132"
 					cy="56"
 					r="2.5"
-					fill="var(--colors-indigo-9, #3e63dd)"
+					fill="var(--colors-indigo-9, #CE2100)"
 				/>
 			</svg>
 		</div>
@@ -128,7 +128,7 @@ export function NotedIcon(props: { size?: number; class?: string }) {
 				n
 			</text>
 			{/* Accent dot */}
-			<circle cx="17.5" cy="16" r="1.5" fill="var(--colors-indigo-9, #3e63dd)" />
+			<circle cx="17.5" cy="16" r="1.5" fill="var(--colors-indigo-9, #CE2100)" />
 		</svg>
 	)
 }
