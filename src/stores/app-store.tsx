@@ -25,6 +25,8 @@ interface AppStore {
 	setSearchQuery: (q: string) => void
 	sidebarCollapsed: () => boolean
 	setSidebarCollapsed: (v: boolean) => void
+	noteListCollapsed: () => boolean
+	setNoteListCollapsed: (v: boolean) => void
 	focusMode: () => boolean
 	setFocusMode: (v: boolean) => void
 	commandPaletteOpen: () => boolean
@@ -73,6 +75,7 @@ export function AppStoreProvider(props: ParentProps) {
 	const [selectedNoteId, setSelectedNoteId] = createSignal<string | null>(null)
 	const [searchQuery, setSearchQuery] = createSignal('')
 	const [sidebarCollapsed, setSidebarCollapsed] = createSignal(false)
+	const [noteListCollapsed, setNoteListCollapsed] = createSignal(false)
 	const [focusMode, setFocusMode] = createSignal(false)
 	const [commandPaletteOpen, setCommandPaletteOpen] = createSignal(false)
 	const [noteSort, _setNoteSort] = createSignal<NoteSortOrder>('updated_at')
@@ -126,6 +129,8 @@ export function AppStoreProvider(props: ParentProps) {
 		setSearchQuery,
 		sidebarCollapsed,
 		setSidebarCollapsed,
+		noteListCollapsed,
+		setNoteListCollapsed,
 		focusMode,
 		setFocusMode,
 		commandPaletteOpen,

@@ -1,6 +1,6 @@
 import { Show, createSignal, onMount, onCleanup } from 'solid-js'
 import { css } from '../../../styled-system/css'
-import { PlusIcon, ArrowUpDownIcon } from 'lucide-solid'
+import { PlusIcon, ArrowUpDownIcon, PanelLeftCloseIcon } from 'lucide-solid'
 import { useAppStore } from '../../stores/app-store'
 
 const headerStyle = css({
@@ -159,6 +159,13 @@ export function NoteListHeader(props: {
 						<PlusIcon class={iconSize} />
 					</button>
 				</Show>
+				<button
+					class={actionBtn}
+					onClick={() => store.setNoteListCollapsed(true)}
+					title="Collapse panel (Ctrl+[)"
+				>
+					<PanelLeftCloseIcon class={iconSize} />
+				</button>
 			</div>
 		</div>
 	)

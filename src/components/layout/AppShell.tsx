@@ -42,6 +42,7 @@ const noteListStyle = css({
 	flexShrink: 0,
 	borderRight: '1px solid',
 	borderRightColor: 'gray.a3',
+	transition: 'width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
 })
 
 const resizeHandle = css({
@@ -98,6 +99,11 @@ export function AppShell() {
 				e.preventDefault()
 				store.setSidebarCollapsed(!store.sidebarCollapsed())
 			}
+			// Ctrl+[: toggle note list
+			if ((e.ctrlKey || e.metaKey) && e.key === '[') {
+				e.preventDefault()
+				store.setNoteListCollapsed(!store.noteListCollapsed())
+			}
 		}
 		window.addEventListener('keydown', handleKeyDown)
 		onCleanup(() => window.removeEventListener('keydown', handleKeyDown))
@@ -153,7 +159,7 @@ export function AppShell() {
 				<Show when={!store.focusMode()}>
 					<div
 						class={noteListStyle}
-						style={{ width: `${noteListWidth()}px` }}
+						style={{ width: store.noteListCollapsed() ? '0px' : `${noteListWidth()}px` }}
 					>
 						<NoteList />
 						<div

@@ -15,6 +15,7 @@ import {
 	PanelRightIcon,
 	PanelBottomIcon,
 	PanelLeftIcon,
+	PanelLeftOpenIcon,
 } from 'lucide-solid'
 
 const editorContainer = css({
@@ -129,6 +130,24 @@ const controlBtn = css({
 
 const controlIconSize = css({ width: '4', height: '4' })
 
+const expandListBtn = css({
+	position: 'absolute',
+	top: '3',
+	left: '3',
+	display: 'flex',
+	alignItems: 'center',
+	justifyContent: 'center',
+	width: '8',
+	height: '8',
+	borderRadius: 'lg',
+	cursor: 'pointer',
+	color: 'fg.subtle',
+	transition: 'all 0.2s',
+	opacity: 0.6,
+	zIndex: 5,
+	_hover: { bg: 'gray.a3', color: 'fg.default', opacity: 1 },
+})
+
 const POSITIONS: ToolbarPosition[] = ['top', 'right', 'bottom', 'left']
 
 function ToolbarPositionIcon(props: { position: ToolbarPosition }) {
@@ -186,17 +205,28 @@ export function EditorPane() {
 			<Show
 				when={editorStore.currentNote()}
 				fallback={
-					<div class={emptyContainer}>
-						<div class={emptyIconWrap}>
-							<PenLineIcon class={emptyIcon} />
+					<>
+						<Show when={appStore.noteListCollapsed() && !appStore.focusMode()}>
+							<button
+								class={expandListBtn}
+								onClick={() => appStore.setNoteListCollapsed(false)}
+								title="Expand note list (Ctrl+[)"
+							>
+								<PanelLeftOpenIcon class={controlIconSize} />
+							</button>
+						</Show>
+						<div class={emptyContainer}>
+							<div class={emptyIconWrap}>
+								<PenLineIcon class={emptyIcon} />
+							</div>
+							<p class={emptyTitle}>No note selected</p>
+							<p class={emptyDesc}>
+								Pick a note from the sidebar, or create a new one to
+								start writing.
+							</p>
+							<span class={emptyKbd}>Ctrl+K to search</span>
 						</div>
-						<p class={emptyTitle}>No note selected</p>
-						<p class={emptyDesc}>
-							Pick a note from the sidebar, or create a new one to
-							start writing.
-						</p>
-						<span class={emptyKbd}>Ctrl+K to search</span>
-					</div>
+					</>
 				}
 			>
 				{(note) => (
@@ -275,8 +305,17 @@ export function EditorPane() {
 							<EditorToolbar position="bottom" />
 						</Show>
 
-						{/* Controls: toolbar position + focus mode */}
+						{/* Controls: expand list + toolbar position + focus mode */}
 						<div class={controlsRow}>
+							<Show when={appStore.noteListCollapsed() && !appStore.focusMode()}>
+								<button
+									class={controlBtn}
+									onClick={() => appStore.setNoteListCollapsed(false)}
+									title="Expand note list (Ctrl+[)"
+								>
+									<PanelLeftOpenIcon class={controlIconSize} />
+								</button>
+							</Show>
 							<Show when={showToolbar(note())}>
 								<button
 									class={controlBtn}

@@ -1,13 +1,18 @@
-productName: Astro Electron App
+appId: com.voyagertech.noted
+productName: noted
+copyright: Copyright (c) 2026 Voyager Technologies Limited
 artifactName: ${productName}-${os}-${arch}.${ext}
 win:
   target: nsis
+  icon: assets/icon.ico
 linux:
   target: AppImage
   category: Utility
+  icon: assets/icon.png
 mac:
   target: dmg
-  category: public.app-category.developer-tools
+  category: public.app-category.productivity
+  icon: assets/icon.icns
 files: ['src/backend/build/**/*', 'dist/**/*']
 extraResources: ['./assets/**']
 directories:

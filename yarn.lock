@@ -4139,45 +4139,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"astrojs-electron-template@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "astrojs-electron-template@workspace:."
-  dependencies:
-    "@ark-ui/solid": "npm:^5.34.1"
-    "@astrojs/solid-js": "npm:^6.0.0"
-    "@pandacss/dev": "npm:^1.9.0"
-    "@tiptap/core": "npm:^3.20.4"
-    "@tiptap/extension-bubble-menu": "npm:^3.20.4"
-    "@tiptap/extension-highlight": "npm:^3.20.4"
-    "@tiptap/extension-placeholder": "npm:^3.20.4"
-    "@tiptap/extension-task-item": "npm:^3.20.4"
-    "@tiptap/extension-task-list": "npm:^3.20.4"
-    "@tiptap/extension-underline": "npm:^3.20.4"
-    "@tiptap/pm": "npm:^3.20.4"
-    "@tiptap/starter-kit": "npm:^3.20.4"
-    "@types/better-sqlite3": "npm:^7.6.13"
-    "@types/node": "npm:^25.5.0"
-    "@typescript-eslint/parser": "npm:^8.57.0"
-    astro: "npm:^6.0.4"
-    better-sqlite3: "npm:^12.8.0"
-    concurrently: "npm:^9.2.1"
-    electron: "npm:^41.0.2"
-    electron-builder: "npm:^26.8.1"
-    electron-is-dev: "npm:^3.0.1"
-    electron-log: "npm:^5.4.3"
-    electron-store: "npm:^11.0.2"
-    electron-updater: "npm:^6.8.3"
-    eslint: "npm:^10.0.3"
-    lucide-solid: "npm:^0.577.0"
-    prettier: "npm:^3.8.1"
-    solid-icons: "npm:^1.2.0"
-    solid-js: "npm:^1.9.11"
-    tsc-alias: "npm:^1.8.16"
-    typescript: "npm:^5.9.3"
-    wait-on: "npm:^9.0.4"
-  languageName: unknown
-  linkType: soft
-
 "async-exit-hook@npm:^2.0.1":
   version: 2.0.1
   resolution: "async-exit-hook@npm:2.0.1"
@@ -8685,6 +8646,45 @@ __metadata:
   checksum: 10c0/95d948f9bdd2cfde91aa786d1816ae40f8262946e13700bf6628105994fe0ff361662c20af3961161c38a119dc977adeb41fc0b41b1745eb77edaaf9cb22db23
   languageName: node
   linkType: hard
+
+"noted@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "noted@workspace:."
+  dependencies:
+    "@ark-ui/solid": "npm:^5.34.1"
+    "@astrojs/solid-js": "npm:^6.0.0"
+    "@pandacss/dev": "npm:^1.9.0"
+    "@tiptap/core": "npm:^3.20.4"
+    "@tiptap/extension-bubble-menu": "npm:^3.20.4"
+    "@tiptap/extension-highlight": "npm:^3.20.4"
+    "@tiptap/extension-placeholder": "npm:^3.20.4"
+    "@tiptap/extension-task-item": "npm:^3.20.4"
+    "@tiptap/extension-task-list": "npm:^3.20.4"
+    "@tiptap/extension-underline": "npm:^3.20.4"
+    "@tiptap/pm": "npm:^3.20.4"
+    "@tiptap/starter-kit": "npm:^3.20.4"
+    "@types/better-sqlite3": "npm:^7.6.13"
+    "@types/node": "npm:^25.5.0"
+    "@typescript-eslint/parser": "npm:^8.57.0"
+    astro: "npm:^6.0.4"
+    better-sqlite3: "npm:^12.8.0"
+    concurrently: "npm:^9.2.1"
+    electron: "npm:^41.0.2"
+    electron-builder: "npm:^26.8.1"
+    electron-is-dev: "npm:^3.0.1"
+    electron-log: "npm:^5.4.3"
+    electron-store: "npm:^11.0.2"
+    electron-updater: "npm:^6.8.3"
+    eslint: "npm:^10.0.3"
+    lucide-solid: "npm:^0.577.0"
+    prettier: "npm:^3.8.1"
+    solid-icons: "npm:^1.2.0"
+    solid-js: "npm:^1.9.11"
+    tsc-alias: "npm:^1.8.16"
+    typescript: "npm:^5.9.3"
+    wait-on: "npm:^9.0.4"
+  languageName: unknown
+  linkType: soft
 
 "nth-check@npm:^2.0.1":
   version: 2.1.1

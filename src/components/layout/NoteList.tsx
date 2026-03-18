@@ -14,6 +14,7 @@ const listContainer = css({
 	flexDirection: 'column',
 	height: '100%',
 	overflow: 'hidden',
+	minWidth: '300px',
 })
 
 const scrollArea = css({
