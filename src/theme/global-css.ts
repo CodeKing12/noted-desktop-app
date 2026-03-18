@@ -149,6 +149,18 @@ export const globalCss = {
         px: '3px',
         py: '1px',
       },
+      // Search highlights
+      '& .search-match': {
+        background: '{colors.indigo.a5}',
+        borderRadius: '2px',
+        px: '1px',
+      },
+      '& .search-current': {
+        background: '{colors.indigo.9}',
+        color: 'white',
+        borderRadius: '2px',
+        px: '1px',
+      },
       // Task list styles
       '& ul[data-type="taskList"]': {
         listStyle: 'none',

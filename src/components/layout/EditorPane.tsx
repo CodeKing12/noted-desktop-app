@@ -3,7 +3,7 @@ import { css } from '../../../styled-system/css'
 import { useEditorStore } from '../../stores/editor-store'
 import { useAppStore } from '../../stores/app-store'
 import { NoteHeader } from '../editor/NoteHeader'
-import { TipTapEditor, getEditorInstance } from '../editor/TipTapEditor'
+import { TipTapEditor, getEditorInstance, searchInNote, clearNoteSearch, scrollToSearchMatch } from '../editor/TipTapEditor'
 import { PlainTextEditor } from '../editor/PlainTextEditor'
 import { TagsBar } from '../editor/TagsBar'
 import { EditorToolbar, type ToolbarPosition } from '../editor/EditorToolbar'
@@ -231,49 +231,30 @@ export function EditorPane() {
 	const [currentMatch, setCurrentMatch] = createSignal(0)
 	let searchInputRef: HTMLInputElement | undefined
 
-	// In-note search: highlight matches using browser find or manual approach
 	function performSearch(query: string) {
-		// Clear previous highlights
+		if (!query.trim()) {
+			clearNoteSearch()
+			setSearchMatches(0)
+			setCurrentMatch(0)
+			return
+		}
+
 		const editor = getEditorInstance()
-		if (!editor) {
-			// Plain text: use textarea search
-			doPlainTextSearch(query)
-			return
+		if (editor) {
+			const count = searchInNote(query, 0)
+			setSearchMatches(count)
+			setCurrentMatch(count > 0 ? 1 : 0)
+			if (count > 0) scrollToSearchMatch(0)
+		} else {
+			// Plain text fallback
+			const note = editorStore.currentNote()
+			const text = (note?.content_plain || note?.content || '').toLowerCase()
+			const q = query.toLowerCase()
+			let count = 0, idx = text.indexOf(q)
+			while (idx !== -1) { count++; idx = text.indexOf(q, idx + 1) }
+			setSearchMatches(count)
+			setCurrentMatch(count > 0 ? 1 : 0)
 		}
-		// For TipTap, use the DOM text search approach
-		const editorEl = editor.view.dom
-		clearHighlights(editorEl)
-
-		if (!query.trim()) {
-			setSearchMatches(0)
-			setCurrentMatch(0)
-			return
-		}
-
-		const marks = highlightTextInElement(editorEl, query)
-		setSearchMatches(marks.length)
-		setCurrentMatch(marks.length > 0 ? 1 : 0)
-		if (marks.length > 0) scrollToMark(marks[0])
-	}
-
-	function doPlainTextSearch(query: string) {
-		if (!query.trim()) {
-			setSearchMatches(0)
-			setCurrentMatch(0)
-			return
-		}
-		const note = editorStore.currentNote()
-		const text = note?.content_plain || note?.content || ''
-		const lower = text.toLowerCase()
-		const q = query.toLowerCase()
-		let count = 0
-		let idx = lower.indexOf(q)
-		while (idx !== -1) {
-			count++
-			idx = lower.indexOf(q, idx + 1)
-		}
-		setSearchMatches(count)
-		setCurrentMatch(count > 0 ? 1 : 0)
 	}
 
 	function navigateMatch(dir: 1 | -1) {
@@ -284,64 +265,11 @@ export function EditorPane() {
 		if (next < 1) next = total
 		setCurrentMatch(next)
 
-		const marks = document.querySelectorAll('mark[data-note-search]')
-		if (marks.length > 0) {
-			marks.forEach((m) => (m as HTMLElement).style.background = '')
-			const target = marks[next - 1] as HTMLElement
-			if (target) {
-				target.style.background = 'var(--colors-indigo-a5)'
-				scrollToMark(target)
-			}
+		const editor = getEditorInstance()
+		if (editor) {
+			searchInNote(searchQuery(), next - 1)
+			scrollToSearchMatch(next - 1)
 		}
-	}
-
-	function clearHighlights(el: HTMLElement) {
-		const marks = el.querySelectorAll('mark[data-note-search]')
-		marks.forEach((mark) => {
-			const parent = mark.parentNode
-			if (parent) {
-				parent.replaceChild(document.createTextNode(mark.textContent || ''), mark)
-				parent.normalize()
-			}
-		})
-	}
-
-	function highlightTextInElement(el: HTMLElement, query: string): HTMLElement[] {
-		const marks: HTMLElement[] = []
-		const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT)
-		const textNodes: Text[] = []
-		let node: Text | null
-		while ((node = walker.nextNode() as Text | null)) {
-			textNodes.push(node)
-		}
-		const lowerQuery = query.toLowerCase()
-		for (const textNode of textNodes) {
-			const text = textNode.textContent || ''
-			const lower = text.toLowerCase()
-			let idx = lower.indexOf(lowerQuery)
-			if (idx === -1) continue
-			const frag = document.createDocumentFragment()
-			let lastIdx = 0
-			while (idx !== -1) {
-				frag.appendChild(document.createTextNode(text.slice(lastIdx, idx)))
-				const mark = document.createElement('mark')
-				mark.setAttribute('data-note-search', 'true')
-				mark.style.background = 'var(--colors-indigo-a3)'
-				mark.style.borderRadius = '2px'
-				mark.textContent = text.slice(idx, idx + query.length)
-				frag.appendChild(mark)
-				marks.push(mark)
-				lastIdx = idx + query.length
-				idx = lower.indexOf(lowerQuery, lastIdx)
-			}
-			frag.appendChild(document.createTextNode(text.slice(lastIdx)))
-			textNode.parentNode?.replaceChild(frag, textNode)
-		}
-		return marks
-	}
-
-	function scrollToMark(el: HTMLElement) {
-		el.scrollIntoView({ block: 'center', behavior: 'smooth' })
 	}
 
 	function closeSearch() {
@@ -349,11 +277,9 @@ export function EditorPane() {
 		setSearchQuery('')
 		setSearchMatches(0)
 		setCurrentMatch(0)
-		const editor = getEditorInstance()
-		if (editor) clearHighlights(editor.view.dom)
+		clearNoteSearch()
 	}
 
-	// Auto-focus search input when opened
 	createEffect(
 		on(
 			() => appStore.noteSearchOpen(),
@@ -361,12 +287,10 @@ export function EditorPane() {
 				if (open) {
 					requestAnimationFrame(() => searchInputRef?.focus())
 				} else {
-					// Clear on close
 					setSearchQuery('')
 					setSearchMatches(0)
 					setCurrentMatch(0)
-					const editor = getEditorInstance()
-					if (editor) clearHighlights(editor.view.dom)
+					clearNoteSearch()
 				}
 			}
 		)

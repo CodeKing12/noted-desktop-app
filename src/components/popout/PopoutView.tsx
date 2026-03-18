@@ -1,4 +1,4 @@
-import { createSignal, createResource, For, Show, onMount } from 'solid-js'
+import { createSignal, createResource, createMemo, For, Show, onMount } from 'solid-js'
 import { css } from '../../../styled-system/css'
 import {
 	PinIcon,
@@ -10,7 +10,21 @@ import {
 	GripVerticalIcon,
 	FileTextIcon,
 } from 'lucide-solid'
+import { generateHTML } from '@tiptap/core'
+import StarterKit from '@tiptap/starter-kit'
+import TaskList from '@tiptap/extension-task-list'
+import TaskItem from '@tiptap/extension-task-item'
+import Underline from '@tiptap/extension-underline'
+import Highlight from '@tiptap/extension-highlight'
 import { formatDate } from '../../lib/date-utils'
+
+const richExtensions = [
+	StarterKit.configure({ heading: { levels: [1, 2, 3] } }),
+	TaskList,
+	TaskItem.configure({ nested: true }),
+	Underline,
+	Highlight.configure({ multicolor: false }),
+]
 
 // ─── Styles ──────────────────────────────────────────────
 
@@ -253,7 +267,8 @@ const noteViewContent = css({
 	overflow: 'auto',
 	px: '4',
 	py: '3',
-	fontSize: '13px',
+	// can remove later
+	fontSize: '13px !important',
 	color: 'fg.default',
 	lineHeight: '1.7',
 	whiteSpace: 'pre-wrap',
@@ -369,6 +384,23 @@ export default function PopoutView() {
 		window.electronAPI.popoutClose()
 	}
 
+	// ── Single note HTML ──
+	const noteHtml = createMemo(() => {
+		const note = singleNote()
+		if (!note) return ''
+		if (note.note_type === 'rich' && note.content) {
+			try {
+				const json = JSON.parse(note.content)
+				return generateHTML(json, richExtensions)
+			} catch {
+				return note.content_plain || note.content || ''
+			}
+		}
+		return ''
+	})
+
+	const isPlainNote = () => singleNote()?.note_type === 'plain'
+
 	// ── Renderers ──
 	function renderTodo(todo: Todo) {
 		return (
@@ -474,7 +506,21 @@ export default function PopoutView() {
 				</div>
 			}>
 				<div class={noteViewContent}>
-					{singleNote()?.content_plain || singleNote()?.content || 'Empty note'}
+					<Show when={isPlainNote()} fallback={
+						<div class="tiptap popup" innerHTML={noteHtml()} />
+					}>
+						<pre style={{
+							'white-space': 'pre-wrap',
+							'word-break': 'break-word',
+							'font-family': 'inherit',
+							'font-size': '0.9375rem',
+							'line-height': '1.8',
+							color: 'var(--colors-fg-default)',
+							margin: '0',
+						}}>
+							{singleNote()?.content_plain || singleNote()?.content || 'Empty note'}
+						</pre>
+					</Show>
 				</div>
 			</Show>
 

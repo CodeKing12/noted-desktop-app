@@ -1,12 +1,14 @@
 import { onMount, onCleanup, createEffect, on } from 'solid-js'
 import { css } from '../../../styled-system/css'
-import { Editor } from '@tiptap/core'
+import { Editor, Extension } from '@tiptap/core'
 import StarterKit from '@tiptap/starter-kit'
 import TaskList from '@tiptap/extension-task-list'
 import TaskItem from '@tiptap/extension-task-item'
 import Placeholder from '@tiptap/extension-placeholder'
 import Underline from '@tiptap/extension-underline'
 import Highlight from '@tiptap/extension-highlight'
+import { Plugin, PluginKey } from '@tiptap/pm/state'
+import { Decoration, DecorationSet } from '@tiptap/pm/view'
 import { useEditorStore } from '../../stores/editor-store'
 import { debounce } from '../../lib/debounce'
 import { tiptapToPlaintext } from '../../lib/tiptap-to-plaintext'
@@ -32,6 +34,98 @@ const editorWrap = css({
 let currentEditor: Editor | null = null
 export function getEditorInstance(): Editor | null {
 	return currentEditor
+}
+
+// ─── Search plugin ───────────────────────────────────────
+
+const searchPluginKey = new PluginKey('noteSearch')
+let searchMatchPositions: { from: number; to: number }[] = []
+
+function createSearchPlugin() {
+	return new Plugin({
+		key: searchPluginKey,
+		state: {
+			init() {
+				return { query: '', currentIndex: 0 }
+			},
+			apply(tr, value) {
+				const meta = tr.getMeta(searchPluginKey)
+				if (meta !== undefined) return meta
+				return value
+			},
+		},
+		props: {
+			decorations(state) {
+				const { query, currentIndex } = searchPluginKey.getState(state) || { query: '', currentIndex: 0 }
+				if (!query) return DecorationSet.empty
+
+				const decorations: Decoration[] = []
+				const lowerQuery = query.toLowerCase()
+				let matchIdx = 0
+
+				state.doc.descendants((node, pos) => {
+					if (!node.isText) return
+					const text = node.text!.toLowerCase()
+					let idx = text.indexOf(lowerQuery)
+					while (idx !== -1) {
+						const from = pos + idx
+						const to = from + query.length
+						decorations.push(
+							Decoration.inline(from, to, {
+								class: matchIdx === currentIndex ? 'search-current' : 'search-match',
+							})
+						)
+						matchIdx++
+						idx = text.indexOf(lowerQuery, idx + 1)
+					}
+				})
+
+				return DecorationSet.create(state.doc, decorations)
+			},
+		},
+	})
+}
+
+export function searchInNote(query: string, currentIndex: number): number {
+	searchMatchPositions = []
+	if (!currentEditor || !query.trim()) {
+		clearNoteSearch()
+		return 0
+	}
+
+	const lowerQuery = query.toLowerCase()
+	currentEditor.state.doc.descendants((node, pos) => {
+		if (!node.isText) return
+		const text = node.text!.toLowerCase()
+		let idx = text.indexOf(lowerQuery)
+		while (idx !== -1) {
+			searchMatchPositions.push({ from: pos + idx, to: pos + idx + query.length })
+			idx = text.indexOf(lowerQuery, idx + 1)
+		}
+	})
+
+	const tr = currentEditor.state.tr.setMeta(searchPluginKey, { query, currentIndex })
+	currentEditor.view.dispatch(tr)
+	return searchMatchPositions.length
+}
+
+export function clearNoteSearch() {
+	if (!currentEditor) return
+	searchMatchPositions = []
+	const tr = currentEditor.state.tr.setMeta(searchPluginKey, { query: '', currentIndex: 0 })
+	currentEditor.view.dispatch(tr)
+}
+
+export function scrollToSearchMatch(index: number) {
+	if (!currentEditor || index < 0 || index >= searchMatchPositions.length) return
+	const { from } = searchMatchPositions[index]
+	try {
+		const domAtPos = currentEditor.view.domAtPos(from)
+		const el = domAtPos.node instanceof HTMLElement ? domAtPos.node : domAtPos.node.parentElement
+		el?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+	} catch {
+		// Position may not be mappable — ignore
+	}
 }
 
 // Store cursor positions per note ID
@@ -63,6 +157,10 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 				Placeholder.configure({ placeholder: 'Start writing...' }),
 				Underline,
 				Highlight.configure({ multicolor: false }),
+				Extension.create({
+					name: 'searchHighlight',
+					addProseMirrorPlugins: () => [createSearchPlugin()],
+				}),
 			],
 			content: parseContent(props.note.content),
 			editable: !props.readonly,

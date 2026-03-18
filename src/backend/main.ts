@@ -39,6 +39,22 @@ const getAssetPath = (...paths: string[]): string => {
 	return path.join(RESOURCES_PATH, ...paths)
 }
 
+function registerZoomShortcuts(win: BrowserWindow) {
+	win.webContents.on('before-input-event', (event, input) => {
+		if (!input.control && !input.meta) return
+		if (input.key === '=' || input.key === '+') {
+			win.webContents.zoomLevel += 0.5
+			event.preventDefault()
+		} else if (input.key === '-') {
+			win.webContents.zoomLevel -= 0.5
+			event.preventDefault()
+		} else if (input.key === '0') {
+			win.webContents.zoomLevel = 0
+			event.preventDefault()
+		}
+	})
+}
+
 const spawnAppWindow = async () => {
 	appWindow = new BrowserWindow({
 		width: 1200,
@@ -65,6 +81,8 @@ const spawnAppWindow = async () => {
 	appWindow.once('ready-to-show', () => {
 		appWindow?.show()
 	})
+
+	registerZoomShortcuts(appWindow)
 
 	if (electronIsDev) appWindow.webContents.openDevTools({ mode: 'right' })
 
@@ -164,6 +182,8 @@ function spawnPopoutWindow(opts: { view: string; listId?: string; title?: string
 			? `http://localhost:7241${route}`
 			: `file://${path.join(__dirname, '../../dist/popout/index.html')}?${params.toString()}`
 	)
+
+	registerZoomShortcuts(popout)
 
 	popout.once('ready-to-show', () => {
 		popout.show()

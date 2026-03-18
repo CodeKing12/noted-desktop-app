@@ -1,1 +1,6 @@
 @layer reset, base, tokens, recipes, utilities; 
+
+.tiptap.popup p {
+    font-size: 14px;
+    line-height: 1.7;
+}
