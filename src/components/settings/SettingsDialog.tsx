@@ -1,6 +1,6 @@
-import { Show, createSignal } from 'solid-js'
+import { Show } from 'solid-js'
 import { css } from '../../../styled-system/css'
-import { useSettingsStore } from '../../stores/settings-store'
+import { useSettingsStore, type AppTheme } from '../../stores/settings-store'
 import {
 	XIcon,
 	SunIcon,
@@ -10,7 +10,10 @@ import {
 	FileTextIcon,
 	PaletteIcon,
 	InfoIcon,
-	ChevronDownIcon,
+	PenLineIcon,
+	FileIcon,
+	CoffeeIcon,
+	CloudyIcon,
 } from 'lucide-solid'
 
 // ─── Overlay + shell ──────────────────────────────────────
@@ -146,45 +149,51 @@ const settingDesc = css({
 
 // ─── Controls ─────────────────────────────────────────────
 
-const selectWrap = css({
-	position: 'relative',
-	display: 'inline-flex',
-	alignItems: 'center',
-})
-
-const selectControl = css({
-	appearance: 'none',
-	px: '4',
-	pr: '9',
-	py: '2',
+const segmentedGroup = css({
+	display: 'flex',
 	borderRadius: 'md',
 	borderWidth: '1px',
 	borderStyle: 'solid',
-	borderColor: 'gray.a4',
+	borderColor: 'gray.a3',
+	overflow: 'hidden',
 	bg: 'gray.a2',
-	color: 'fg.default',
-	fontSize: '13px',
-	fontWeight: '500',
-	outline: 'none',
-	cursor: 'pointer',
-	minWidth: '140px',
-	transition: 'all 0.15s',
-	_hover: { borderColor: 'gray.a5', bg: 'gray.a3' },
-	_focus: { borderColor: 'indigo.a6', boxShadow: '0 0 0 3px {colors.indigo.a2}' },
 })
 
-const selectChevron = css({
-	position: 'absolute',
-	right: '10px',
-	pointerEvents: 'none',
+const segmentedOption = css({
+	display: 'flex',
+	alignItems: 'center',
+	gap: '1.5',
+	px: '3.5',
+	py: '2',
+	fontSize: '13px',
+	fontWeight: '500',
+	cursor: 'pointer',
+	color: 'fg.muted',
+	transition: 'all 0.15s',
+	borderRight: '1px solid',
+	borderRightColor: 'gray.a3',
+	_hover: { color: 'fg.default', bg: 'gray.a3' },
+	_last: { borderRight: 'none' },
+	'&[data-active="true"]': {
+		bg: 'indigo.a2',
+		color: 'indigo.11',
+		fontWeight: '600',
+	},
+})
+
+const segmentedIcon = css({
 	width: '3.5',
 	height: '3.5',
-	color: 'fg.subtle',
 })
 
 const themeGroup = css({
 	display: 'flex',
-	gap: '2',
+	borderRadius: 'md',
+	borderWidth: '1px',
+	borderStyle: 'solid',
+	borderColor: 'gray.a3',
+	overflow: 'hidden',
+	bg: 'gray.a2',
 })
 
 const themeOption = css({
@@ -194,16 +203,14 @@ const themeOption = css({
 	gap: '1.5',
 	px: '4',
 	py: '3',
-	borderRadius: 'md',
 	cursor: 'pointer',
-	borderWidth: '2px',
-	borderStyle: 'solid',
-	borderColor: 'gray.a3',
 	transition: 'all 0.15s',
 	color: 'fg.muted',
-	_hover: { borderColor: 'gray.a5', bg: 'gray.a2' },
+	borderRight: '1px solid',
+	borderRightColor: 'gray.a3',
+	_hover: { bg: 'gray.a3', color: 'fg.default' },
+	_last: { borderRight: 'none' },
 	'&[data-active="true"]': {
-		borderColor: 'indigo.9',
 		bg: 'indigo.a2',
 		color: 'indigo.11',
 	},
@@ -236,16 +243,6 @@ const footer = css({
 
 export function SettingsDialog() {
 	const settings = useSettingsStore()
-	const [currentTheme, setCurrentTheme] = createSignal<'light' | 'dark' | 'system'>('system')
-
-	function handleThemeChange(theme: 'light' | 'dark' | 'system') {
-		setCurrentTheme(theme)
-		if (theme === 'system') {
-			window.electronAPI.darkModeSystem()
-		} else {
-			window.electronAPI.darkModeUpdate(theme)
-		}
-	}
 
 	return (
 		<Show when={settings.showSettingsDialog()}>
@@ -286,24 +283,40 @@ export function SettingsDialog() {
 							<div class={themeGroup}>
 								<div
 									class={themeOption}
-									data-active={currentTheme() === 'light'}
-									onClick={() => handleThemeChange('light')}
+									data-active={settings.theme() === 'light'}
+									onClick={() => settings.setTheme('light')}
 								>
 									<SunIcon class={themeOptionIcon} />
 									<span class={themeOptionLabel}>Light</span>
 								</div>
 								<div
 									class={themeOption}
-									data-active={currentTheme() === 'dark'}
-									onClick={() => handleThemeChange('dark')}
+									data-active={settings.theme() === 'warm'}
+									onClick={() => settings.setTheme('warm')}
+								>
+									<CoffeeIcon class={themeOptionIcon} />
+									<span class={themeOptionLabel}>Warm</span>
+								</div>
+								<div
+									class={themeOption}
+									data-active={settings.theme() === 'slate'}
+									onClick={() => settings.setTheme('slate')}
+								>
+									<CloudyIcon class={themeOptionIcon} />
+									<span class={themeOptionLabel}>Slate</span>
+								</div>
+								<div
+									class={themeOption}
+									data-active={settings.theme() === 'dark'}
+									onClick={() => settings.setTheme('dark')}
 								>
 									<MoonIcon class={themeOptionIcon} />
 									<span class={themeOptionLabel}>Dark</span>
 								</div>
 								<div
 									class={themeOption}
-									data-active={currentTheme() === 'system'}
-									onClick={() => handleThemeChange('system')}
+									data-active={settings.theme() === 'system'}
+									onClick={() => settings.setTheme('system')}
 								>
 									<MonitorIcon class={themeOptionIcon} />
 									<span class={themeOptionLabel}>System</span>
@@ -326,20 +339,23 @@ export function SettingsDialog() {
 									New notes will open with this editor
 								</div>
 							</div>
-							<div class={selectWrap}>
-								<select
-									class={selectControl}
-									value={settings.defaultNoteType()}
-									onChange={(e) =>
-										settings.setDefaultNoteType(
-											e.currentTarget.value as 'rich' | 'plain'
-										)
-									}
+							<div class={segmentedGroup}>
+								<div
+									class={segmentedOption}
+									data-active={settings.defaultNoteType() === 'rich'}
+									onClick={() => settings.setDefaultNoteType('rich')}
 								>
-									<option value="rich">Rich Text</option>
-									<option value="plain">Plain Text</option>
-								</select>
-								<ChevronDownIcon class={selectChevron} />
+									<PenLineIcon class={segmentedIcon} />
+									Rich Text
+								</div>
+								<div
+									class={segmentedOption}
+									data-active={settings.defaultNoteType() === 'plain'}
+									onClick={() => settings.setDefaultNoteType('plain')}
+								>
+									<FileIcon class={segmentedIcon} />
+									Plain Text
+								</div>
 							</div>
 						</div>
 
@@ -367,7 +383,7 @@ export function SettingsDialog() {
 					{/* Footer */}
 					<div class={footer}>
 						<FileTextIcon class={css({ width: '3.5', height: '3.5' })} />
-						<span>Made with care</span>
+						<span>Made with care by Eyetu Kingsley</span>
 					</div>
 				</div>
 			</div>

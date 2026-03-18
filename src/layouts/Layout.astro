@@ -42,4 +42,72 @@ const { title = "Notes" } = Astro.props;
 			color: #edeef0;
 		}
 	}
+
+	/* ── Warm / Cream theme ───────────────────────── */
+	html[data-theme="warm"],
+	html[data-theme="warm"] body,
+	html[data-theme="warm"] :where(:root, :host) {
+		color-scheme: light !important;
+		background-color: #ebe1d4 !important;
+		color: #231f1a !important;
+
+		--colors-gray-1: #f4ece2 !important;
+		--colors-gray-2: #ebe1d4 !important;
+		--colors-gray-3: #dfd3c4 !important;
+		--colors-gray-4: #ded4c8 !important;
+		--colors-gray-5: #d3c8ba !important;
+		--colors-gray-6: #c7baab !important;
+		--colors-gray-7: #b5a797 !important;
+		--colors-gray-8: #9a8c7c !important;
+		--colors-gray-9: #837565 !important;
+		--colors-gray-10: #776a5b !important;
+		--colors-gray-11: #5c5044 !important;
+		--colors-gray-12: #231f1a !important;
+		--colors-gray-a1: #6644000a !important;
+		--colors-gray-a2: #66330014 !important;
+		--colors-gray-a3: #5522001f !important;
+		--colors-gray-a4: #4422002a !important;
+		--colors-gray-a5: #44220035 !important;
+		--colors-gray-a6: #44220042 !important;
+		--colors-gray-a7: #33220055 !important;
+		--colors-gray-a8: #2d1f0070 !important;
+		--colors-gray-a9: #21170088 !important;
+		--colors-gray-a10: #1f150095 !important;
+		--colors-gray-a11: #150e00aa !important;
+		--colors-gray-a12: #0d0800e5 !important;
+	}
+
+	/* ── Slate / Gray theme ───────────────────────── */
+	html[data-theme="slate"],
+	html[data-theme="slate"] body,
+	html[data-theme="slate"] :where(:root, :host) {
+		color-scheme: light !important;
+		background-color: #dee1e5 !important;
+		color: #1a1d21 !important;
+
+		--colors-gray-1: #e8eaee !important;
+		--colors-gray-2: #dee1e5 !important;
+		--colors-gray-3: #d2d5da !important;
+		--colors-gray-4: #c6cad0 !important;
+		--colors-gray-5: #babfc6 !important;
+		--colors-gray-6: #adb3bb !important;
+		--colors-gray-7: #9ba2ac !important;
+		--colors-gray-8: #838b97 !important;
+		--colors-gray-9: #67707b !important;
+		--colors-gray-10: #5a636e !important;
+		--colors-gray-11: #424a54 !important;
+		--colors-gray-12: #191c20 !important;
+		--colors-gray-a1: #0022440c !important;
+		--colors-gray-a2: #00223318 !important;
+		--colors-gray-a3: #00223326 !important;
+		--colors-gray-a4: #00223332 !important;
+		--colors-gray-a5: #0022333e !important;
+		--colors-gray-a6: #0022334c !important;
+		--colors-gray-a7: #00223360 !important;
+		--colors-gray-a8: #00223378 !important;
+		--colors-gray-a9: #00152295 !important;
+		--colors-gray-a10: #001522a2 !important;
+		--colors-gray-a11: #000d18bb !important;
+		--colors-gray-a12: #00060de8 !important;
+	}
 </style>

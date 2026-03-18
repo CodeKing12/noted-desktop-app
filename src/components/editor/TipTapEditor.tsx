@@ -74,6 +74,31 @@ export function TipTapEditor(props: { note: Note; readonly?: boolean }) {
 			},
 		})
 		currentEditor = editor
+
+		// Prevent task checkboxes from stealing editor focus/cursor
+		containerRef!.addEventListener('mousedown', (e) => {
+			const target = e.target as HTMLElement
+			if (target.tagName === 'INPUT' && target.getAttribute('type') === 'checkbox') {
+				e.preventDefault()
+				// Toggle the checkbox via TipTap's command instead
+				const pos = editor?.view.posAtDOM(target, 0)
+				if (pos != null && editor) {
+					const resolved = editor.state.doc.resolve(pos)
+					const node = resolved.nodeAfter ?? resolved.parent
+					if (node?.type.name === 'taskItem') {
+						editor.chain()
+							.command(({ tr }) => {
+								tr.setNodeMarkup(resolved.before(resolved.depth), undefined, {
+									...node.attrs,
+									checked: !node.attrs.checked,
+								})
+								return true
+							})
+							.run()
+					}
+				}
+			}
+		})
 	})
 
 	// When the note changes (different note selected), update editor content

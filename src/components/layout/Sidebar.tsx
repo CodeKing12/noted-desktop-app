@@ -485,6 +485,13 @@ export function Sidebar() {
 					</div>
 					<div
 						class={collapsedItem}
+						onClick={() => settingsStore.cycleTheme()}
+						title={`Theme: ${settingsStore.theme()}`}
+					>
+						<SunIcon class={iconStyle} />
+					</div>
+					<div
+						class={collapsedItem}
 						onClick={() => settingsStore.setShowSettingsDialog(true)}
 						title="Settings"
 					>
@@ -633,8 +640,8 @@ export function Sidebar() {
 						</button>
 						<button
 							class={toolbarBtn}
-							onClick={() => window.electronAPI.darkModeToggle()}
-							title="Toggle theme"
+							onClick={() => settingsStore.cycleTheme()}
+							title={`Theme: ${settingsStore.theme()}`}
 						>
 							<SunIcon class={smallIcon} />
 						</button>
