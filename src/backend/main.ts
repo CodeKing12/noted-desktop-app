@@ -10,6 +10,7 @@ import log from 'electron-log'
 import electronUpdater from 'electron-updater'
 import electronIsDev from 'electron-is-dev'
 import ElectronStore from 'electron-store'
+import url from 'url'
 import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import { RESOURCES_PATH } from './constants.js'
@@ -75,7 +76,11 @@ const spawnAppWindow = async () => {
 	appWindow.loadURL(
 		electronIsDev
 			? 'http://localhost:7241'
-			: `file://${path.join(__dirname, '../../dist/index.html')}`
+			: url.format({
+					slashes: true,
+					protocol: 'file:',
+					pathname: path.resolve(app.getAppPath(), 'dist/index.html'),
+				})
 	)
 
 	appWindow.once('ready-to-show', () => {
@@ -125,7 +130,11 @@ function spawnQuickCaptureWindow() {
 	quickCaptureWindow.loadURL(
 		electronIsDev
 			? 'http://localhost:7241/quick-capture'
-			: `file://${path.join(__dirname, '../../dist/quick-capture/index.html')}`
+			: url.format({
+					slashes: true,
+					protocol: 'file:',
+					pathname: path.resolve(app.getAppPath(), 'dist/quick-capture.html'),
+				})
 	)
 
 	quickCaptureWindow.once('ready-to-show', () => {
@@ -176,11 +185,15 @@ function spawnPopoutWindow(opts: { view: string; listId?: string; title?: string
 		},
 	})
 
-	const route = `/popout?${params.toString()}`
 	popout.loadURL(
 		electronIsDev
-			? `http://localhost:7241${route}`
-			: `file://${path.join(__dirname, '../../dist/popout/index.html')}?${params.toString()}`
+			? `http://localhost:7241/popout?${params.toString()}`
+			: url.format({
+					slashes: true,
+					protocol: 'file:',
+					pathname: path.resolve(app.getAppPath(), 'dist/popout.html'),
+					search: params.toString(),
+				})
 	)
 
 	registerZoomShortcuts(popout)

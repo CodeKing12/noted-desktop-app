@@ -4070,6 +4070,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"astro-relative-links@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "astro-relative-links@npm:0.4.2"
+  dependencies:
+    glob: "npm:^10.3.10"
+  peerDependencies:
+    astro: ">=3.0.0"
+  checksum: 10c0/28edc1cb896388fda203eee953a4e775af62ca8e0d8b9fada244ba80294d31deaaa51a1d36ae31090ea22ed1a3ac312369157b0989b426e2b65c4f15bcc13093
+  languageName: node
+  linkType: hard
+
 "astro@npm:^6.0.4":
   version: 6.0.5
   resolution: "astro@npm:6.0.5"
@@ -6466,7 +6477,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^10.2.2":
+"glob@npm:^10.2.2, glob@npm:^10.3.10":
   version: 10.5.0
   resolution: "glob@npm:10.5.0"
   dependencies:
@@ -8667,6 +8678,7 @@ __metadata:
     "@types/node": "npm:^25.5.0"
     "@typescript-eslint/parser": "npm:^8.57.0"
     astro: "npm:^6.0.4"
+    astro-relative-links: "npm:^0.4.2"
     better-sqlite3: "npm:^12.8.0"
     concurrently: "npm:^9.2.1"
     electron: "npm:^41.0.2"

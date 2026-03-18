@@ -39,4 +39,5 @@ dmg:
 files: ['src/backend/build/**/*', 'dist/**/*']
 extraResources: ['./assets/**']
 directories:
+  output: 'release'
   buildResources: 'assets'
